@@ -1,0 +1,19 @@
+image: 'golang:latest'
+
+
+variables:
+  CGO_ENABLED: "0"
+
+stages:
+  - test
+  - build
+
+go_test:
+  stage: test
+  script:
+    - go test 
+
+go_docker:
+  stage: build 
+  script: 
+    - go build
