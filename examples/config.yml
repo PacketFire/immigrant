@@ -1,0 +1,5 @@
+---
+type: mysql
+database: blog_db
+username: root
+password: root

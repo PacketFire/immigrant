@@ -1,0 +1,17 @@
+---
+- revision: 1-create-initial-tables
+  migrate:
+    - |
+      create table users (
+        `id` int(11) not null,
+
+        primary key (`id`)
+      ) engine=InnoDB default charset=utf8;
+  rollback: 
+    - drop table users;
+
+- revision: 3-add-user-name-field
+  migrate:
+    - alter table `users` add `name` varchar(60) not null;
+  rollback:
+    - alter table `users` drop `name`;

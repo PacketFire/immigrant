@@ -1,0 +1,19 @@
+---
+- revision: 1-create-initial-tables
+  migrate:
+    - |
+      create table posts (
+        `id` int(11) not null,
+
+        `user_id` int(11) not null,
+
+        primary key (`id`)
+      ) engine=InnoDB default charset=utf8;
+  rollback: 
+    - drop table posts;
+
+- revision: 2-add-posts-user-foreign-key
+  migrate:
+    - alter table `posts` add foreign key `user_id` references `users` (`id`);
+  rollback:
+    - alter table drop foreign key `user_id`;
