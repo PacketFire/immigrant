@@ -13,7 +13,7 @@ go_test:
   script:
     - go test 
 
-go_docker:
+go_build:
   stage: build 
   script: 
     - go build
