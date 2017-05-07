@@ -37,3 +37,5 @@ go_build:
   artifacts:
     paths:
       - artifacts/*
+  only:
+    - master
