@@ -30,7 +30,12 @@ func Walk(path string) (map[string]Revision, error) {
 		rm := make(map[string]Revision)
 
 		for rev := range cpc {
-			rm[rev.Revision] = rev
+			id := rev.Revision
+			if _, prs := rm[id]; prs == true {
+				panic(fmt.Sprintf("Duplicate revision ID: %s", id))
+			}
+
+			rm[id] = rev
 		}
 
 		cmc <- rm

@@ -43,10 +43,6 @@ func TestWalkNonYamlFile(t *testing.T) {
 	}
 }
 
-func TestDuplicateRevisions(t *testing.T) {
-	Walk(duplicateRevisionTestDir)
-}
-
 func TestYAMLFileExtensions(t *testing.T) {
 	rb, err := Walk(fileExtTestDir)
 	if err != nil {
