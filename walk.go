@@ -53,6 +53,7 @@ func Walk(path string) (map[string]Revision, error) {
 func parseRevisions(c chan Revision) func(string, os.FileInfo, error) error {
 	return func(path string, info os.FileInfo, err error) error {
 		var rb []Revision
+
 		// Catch any errors passed from Walk.
 		if err != nil {
 			return err
