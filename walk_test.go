@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"testing"
 )
 
@@ -17,6 +18,8 @@ func TestWalk(t *testing.T) {
 }
 
 func TestEmptyWalk(t *testing.T) {
+	// Create dependent directory
+	os.Mkdir(emptyRevisionTestDir, 0755)
 	_, err := Walk(emptyRevisionTestDir)
 	if err != nil {
 		t.Fatal(err)
