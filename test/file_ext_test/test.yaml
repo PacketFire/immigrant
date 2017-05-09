@@ -1,5 +1,5 @@
 ---
-- revision: revision_txt
+- revision: revision_1
   migrate:
     - migrate 1
     - migrate 2

@@ -30,7 +30,12 @@ func Walk(path string) (map[string]Revision, error) {
 		rm := make(map[string]Revision)
 
 		for rev := range cpc {
-			rm[rev.Revision] = rev
+			id := rev.Revision
+			if _, prs := rm[id]; prs == true {
+				panic(fmt.Sprintf("Duplicate revision ID: %s", id))
+			}
+
+			rm[id] = rev
 		}
 
 		cmc <- rm
@@ -53,6 +58,7 @@ func Walk(path string) (map[string]Revision, error) {
 func parseRevisions(c chan Revision) func(string, os.FileInfo, error) error {
 	return func(path string, info os.FileInfo, err error) error {
 		var rb []Revision
+
 		// Catch any errors passed from Walk.
 		if err != nil {
 			return err
@@ -64,7 +70,7 @@ func parseRevisions(c chan Revision) func(string, os.FileInfo, error) error {
 		}
 
 		// verify that the file is yaml
-		if strings.HasSuffix(path, ".yml") {
+		if strings.HasSuffix(path, ".yml") || strings.HasSuffix(path, ".yaml") {
 			yml, e := ioutil.ReadFile(path)
 			if e != nil {
 				return e
