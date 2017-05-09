@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 const (
@@ -51,6 +52,7 @@ func Walk(path string) (map[string]Revision, error) {
 // method.
 func parseRevisions(c chan Revision) func(string, os.FileInfo, error) error {
 	return func(path string, info os.FileInfo, err error) error {
+		var rb []Revision
 		// Catch any errors passed from Walk.
 		if err != nil {
 			return err
@@ -61,16 +63,17 @@ func parseRevisions(c chan Revision) func(string, os.FileInfo, error) error {
 			return nil
 		}
 
-		rb := make([]Revision, 0, RevisionBuffSize)
+		// verify that the file is yaml
+		if strings.HasSuffix(path, ".yml") {
+			yml, e := ioutil.ReadFile(path)
+			if e != nil {
+				return e
+			}
 
-		// Just attempt to read the whole file.
-		yml, e := ioutil.ReadFile(path)
-		if e != nil {
-			return e
-		}
-
-		if err := yaml.Unmarshal(yml, &rb); err != nil {
-			return errors.New(fmt.Sprintf("Unable to unmarshal %s", path))
+			rb, err = parseYamlRevisions(yml)
+			if err != nil {
+				return errors.New(fmt.Sprintf("Unable to unmarshal %s", path))
+			}
 		}
 
 		// Push each revision to to the sync routine.
@@ -80,4 +83,13 @@ func parseRevisions(c chan Revision) func(string, os.FileInfo, error) error {
 
 		return nil
 	}
+}
+
+func parseYamlRevisions(yml []byte) ([]Revision, error) {
+	rb := make([]Revision, 0, RevisionBuffSize)
+	if err := yaml.Unmarshal(yml, &rb); err != nil {
+		return rb, errors.New("Unable to unmarshal file")
+	}
+
+	return rb, nil
 }
