@@ -1,5 +1,5 @@
 ---
-- revision: 1-create-initial-tables
+- revision: 2-create-posts-table
   migrate:
     - |
       create table posts (
@@ -12,7 +12,7 @@
   rollback: 
     - drop table posts;
 
-- revision: 2-add-posts-user-foreign-key
+- revision: 3-add-posts-user-foreign-key
   migrate:
     - alter table `posts` add foreign key `user_id` references `users` (`id`);
   rollback:
