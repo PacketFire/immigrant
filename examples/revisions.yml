@@ -1,4 +1,5 @@
 ---
-- 1-create-initial-tables
-- 2-add-posts-user-foreign-key
-- 3-add-user-name-field
+- 1-create-users-table
+- 2-create-posts-table
+- 3-add-posts-user-foreign-key
+- 4-add-user-name-field

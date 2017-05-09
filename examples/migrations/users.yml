@@ -1,5 +1,5 @@
 ---
-- revision: 1-create-initial-tables
+- revision: 1-create-users-table
   migrate:
     - |
       create table users (
@@ -10,7 +10,7 @@
   rollback: 
     - drop table users;
 
-- revision: 3-add-user-name-field
+- revision: 4-add-user-name-field
   migrate:
     - alter table `users` add `name` varchar(60) not null;
   rollback:
