@@ -1,0 +1,7 @@
+---
+- revision: revision_txt
+  migrate:
+    - migrate 1
+    - migrate 2
+  rollback: 
+    - rollback 1 
