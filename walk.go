@@ -64,7 +64,7 @@ func parseRevisions(c chan Revision) func(string, os.FileInfo, error) error {
 		}
 
 		// verify that the file is yaml
-		if strings.HasSuffix(path, ".yml") {
+		if strings.HasSuffix(path, ".yml") || strings.HasSuffix(path, ".yaml") {
 			yml, e := ioutil.ReadFile(path)
 			if e != nil {
 				return e
