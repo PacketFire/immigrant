@@ -2,11 +2,12 @@ package main
 
 import (
 	"os"
+	"path/filepath"
 	"testing"
 )
 
 const (
-	revisionTestDir          string = "test/revisions"
+	revisionTestDir          string = "test/parse_test_dir"
 	emptyRevisionTestDir     string = "test/empty_revisions_dir"
 	duplicateRevisionTestDir string = "test/duplicate_revisions"
 	fileExtTestDir           string = "test/file_ext_test"
@@ -25,7 +26,9 @@ func TestWalk(t *testing.T) {
 
 func TestEmptyWalk(t *testing.T) {
 	// Create dependent directory
+	td := filepath.Join(emptyRevisionTestDir, "revisions")
 	os.Mkdir(emptyRevisionTestDir, 0755)
+	os.Mkdir(td, 0755)
 	_, err := Walk(emptyRevisionTestDir)
 	if err != nil {
 		t.Fatal(err)
