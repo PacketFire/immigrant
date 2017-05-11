@@ -1,0 +1,6 @@
+---
+  Driver: MySQL
+  User: test
+  Passwd: testwd
+  Host: example.coom
+  Port: "3306"
