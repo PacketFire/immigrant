@@ -27,8 +27,6 @@ func Walk(path string) (map[string]Revision, error) {
 
 	rpath := filepath.Join(path, "revisions")
 
-	fmt.Println(rpath)
-
 	// Provide a goroutine to protect a channel to consolidate Revisions.
 	// In this source file, this will be referred to as the sync routine.
 	go func(cmc chan map[string]Revision, cpc chan Revision) {
