@@ -1,8 +1,12 @@
 package main
 
 import (
-  "os"
-  "path/filepath"
+	"errors"
+	"fmt"
+	"gopkg.in/yaml.v2"
+	"io/ioutil"
+	"os"
+	"path/filepath"
 )
 
 type Sequence struct {
@@ -15,6 +19,22 @@ type Sequence struct {
 func ParseSequence(path string) (*Sequence, error) {
 	seq := new(Sequence)
 
+	rp, err := revisionFileName(path)
+	if err != nil {
+
+		return seq, err
+	}
+
+	raw, err := ioutil.ReadFile(rp)
+	if err != nil {
+		return seq, errors.New(fmt.Sprintf("Unabled to open sequence: %s", rp))
+	}
+
+	seq, err = unmarshalYamlSequence(raw)
+	if err != nil {
+		return seq, errors.New("Unable to unmarshal sequence.")
+	}
+
 	return seq, nil
 }
 
@@ -23,16 +43,27 @@ func ParseSequence(path string) (*Sequence, error) {
 // success, a string path to the file and nil is returned. On failure, an empty
 // string and the error is returned.
 func revisionFileName(path string) (string, error) {
-  var rp string
+	var rp string
+	ymlp := filepath.Join(path, "revision.yml")
+	yamlp := filepath.Join(path, "revision.yaml")
 
-  return rp, nil
+	if _, err := os.Stat(ymlp); err == nil {
+		return ymlp, nil
+	} else if _, err := os.Stat(yamlp); err == nil {
+		return yamlp, nil
+	}
+
+	return rp, errors.New("Sequence does not exist in config directory.")
 }
 
-// unmarshalYamlSequence takes the raw yaml string and unmarshals it to a
+// unmarshalYamlSequence takes the raw yaml []byte and unmarshals it to a
 // *Sequence. On success, a *Sequence and an error is returned. on failure, a
 // *Sequence and an error is returned.
-func unmarshalYamlSequence(sf string) (*Sequence, error) {
-  seq := new(Sequence)
+func unmarshalYamlSequence(yml []byte) (*Sequence, error) {
+	seq := new(Sequence)
+	if err := yaml.Unmarshal(yml, seq); err != nil {
+		return seq, errors.New("Unable to unmarshal file")
+	}
 
-  return seq, nil
+	return seq, nil
 }
