@@ -10,7 +10,7 @@ import (
 )
 
 type Sequence struct {
-	Revisions []*Revision `yaml:"revisions"`
+	Revisions []string `yaml:"revisions"`
 }
 
 // Parse sequence will take a path to the config directory and attempt to open
@@ -44,8 +44,8 @@ func ParseSequence(path string) (*Sequence, error) {
 // string and the error is returned.
 func revisionFileName(path string) (string, error) {
 	var rp string
-	ymlp := filepath.Join(path, "revision.yml")
-	yamlp := filepath.Join(path, "revision.yaml")
+	ymlp := filepath.Join(path, "revisions.yml")
+	yamlp := filepath.Join(path, "revisions.yaml")
 
 	if _, err := os.Stat(ymlp); err == nil {
 		return ymlp, nil
