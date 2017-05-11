@@ -21,8 +21,13 @@ const (
 func Walk(path string) (map[string]Revision, error) {
 	// parse channel for stream of revisions.
 	pc := make(chan Revision)
+
 	// map channel for syncing map back to curren routine.
 	mc := make(chan map[string]Revision)
+
+	rpath := filepath.Join(path, "revisions")
+
+	fmt.Println(rpath)
 
 	// Provide a goroutine to protect a channel to consolidate Revisions.
 	// In this source file, this will be referred to as the sync routine.
@@ -41,7 +46,7 @@ func Walk(path string) (map[string]Revision, error) {
 		cmc <- rm
 	}(mc, pc)
 
-	if err := filepath.Walk(path, parseRevisions(pc)); err != nil {
+	if err := filepath.Walk(rpath, parseRevisions(pc)); err != nil {
 		return make(map[string]Revision), errors.New("Directory traversal failed")
 	}
 

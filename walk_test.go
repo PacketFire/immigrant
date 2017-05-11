@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	revisionTestDir          string = "test/revisions"
+	revisionTestDir          string = "test/parse_test_dir"
 	emptyRevisionTestDir     string = "test/empty_revisions_dir"
 	duplicateRevisionTestDir string = "test/duplicate_revisions"
 	fileExtTestDir           string = "test/file_ext_test"
