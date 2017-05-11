@@ -81,7 +81,7 @@ func parseRevisions(c chan Revision) func(string, os.FileInfo, error) error {
 				return e
 			}
 
-			rb, err = parseYamlRevisions(yml)
+			rb, err = unmarshalYamlRevisions(yml)
 			if err != nil {
 				return errors.New(fmt.Sprintf("Unable to unmarshal %s", path))
 			}
@@ -96,7 +96,7 @@ func parseRevisions(c chan Revision) func(string, os.FileInfo, error) error {
 	}
 }
 
-func parseYamlRevisions(yml []byte) ([]Revision, error) {
+func unmarshalYamlRevisions(yml []byte) ([]Revision, error) {
 	rb := make([]Revision, 0, RevisionBuffSize)
 	if err := yaml.Unmarshal(yml, &rb); err != nil {
 		return rb, errors.New("Unable to unmarshal file")
