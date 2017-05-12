@@ -10,7 +10,7 @@ func TestParseConfig(t *testing.T) {
 		t.Errorf("Unable to parse Config.")
 	}
 
-	if drv, prs := c["Driver"]; prs != true && drv != "MySQL" {
+	if drv, prs := c["type"]; prs != true && drv != "MySQL" {
 		t.Errorf("Config unmarshal failing.")
 	}
 }

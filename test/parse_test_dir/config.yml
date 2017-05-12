@@ -1,6 +1,7 @@
 ---
-  Driver: MySQL
-  User: test
-  Passwd: testwd
-  Host: example.coom
-  Port: "3306"
+type: mysql
+database: blog_db
+username: root
+password: root
+host: example.coom
+port: "3306"
