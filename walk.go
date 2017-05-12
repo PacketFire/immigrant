@@ -16,9 +16,9 @@ const (
 
 // Walk takes a path and will traverse the entire directory, dispatching the
 // files to the parseRevisions function. If any fatal errors are returned an
-// the returned error will be non-nil. On success a populated map of Revision
-// instances will be returened.
-func Walk(path string) (map[string]Revision, error) {
+// the returned error will be non-nil. On success a *Revisions is returned.
+// on failure a *Revisions and error is returend
+func Walk(path string) (*Revisions, error) {
 	// parse channel for stream of revisions.
 	pc := make(chan Revision)
 
@@ -26,8 +26,6 @@ func Walk(path string) (map[string]Revision, error) {
 	mc := make(chan map[string]Revision)
 
 	rpath := filepath.Join(path, "revisions")
-
-	fmt.Println(rpath)
 
 	// Provide a goroutine to protect a channel to consolidate Revisions.
 	// In this source file, this will be referred to as the sync routine.
@@ -47,13 +45,13 @@ func Walk(path string) (map[string]Revision, error) {
 	}(mc, pc)
 
 	if err := filepath.Walk(rpath, parseRevisions(pc)); err != nil {
-		return make(map[string]Revision), errors.New("Directory traversal failed")
+		return &Revisions{}, errors.New("Directory traversal failed")
 	}
 
 	close(pc)
 	revisions := <-mc
 
-	return revisions, nil
+	return &Revisions{revisions: revisions}, nil
 }
 
 // parseRevisions will take a channel as an argument and will inject the
