@@ -12,8 +12,8 @@ func TestWalk(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if len(rb) != 3 {
-		t.Fatal("Failed to parse files.")
+	if rb.Length() != 3 {
+		t.Fatal("Failing to parse revisions.")
 	}
 }
 
@@ -29,12 +29,12 @@ func TestEmptyWalk(t *testing.T) {
 }
 
 func TestWalkNonYamlFile(t *testing.T) {
-	revisions, err := Walk(revisionTestDir)
+	rev, err := Walk(revisionTestDir)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	if _, p := revisions["revision_txt"]; p == true {
+	if _, p := rev.Revision("revision_txt"); p == true {
 		t.Fatal("Walk should not parse non yaml files.")
 	}
 }
@@ -45,7 +45,7 @@ func TestYAMLFileExtensions(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if len(rb) != 2 {
+	if rb.Length() != 2 {
 		t.Fatal("Failing to open both yaml file extensions.")
 	}
 }
