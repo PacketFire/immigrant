@@ -58,11 +58,18 @@ func main() {
 		}
 	}()
 
+	// ml will function as a migration lock. This will be pushed to each
+	// migration/rollback as will blcok both at the signal handler as well as
+	// at the cli. This will prevent any actions from being taken until a
+	// migration has hit a stable state.
+	ml := make(chan error)
+
 	// Signal Handling
 	sigs := make(chan os.Signal)
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 	go func() {
 		<-sigs
+		<-ml
 		Shutdown(ExitOk)
 	}()
 }
