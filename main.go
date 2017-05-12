@@ -8,8 +8,9 @@ import (
 )
 
 const (
-	ExitOk  int = 0
-	ExitErr int = 1
+	ExitOk       int    = 0
+	ExitErr      int    = 1
+	ConfigENVVar string = "IMMIGRANT_CONFIG_DIR"
 )
 
 var (
@@ -21,6 +22,28 @@ func init() {
 		"",
 		"Specify the config directory")
 	flag.Parse()
+}
+
+// Attempts to fetch the config path from the following location in the defined
+// order.
+func ConfigPath() string {
+	if *cd != "" {
+		return *cd
+	}
+
+	if env, err := os.LookupEnv(ConfigENVVar); err == true {
+		return env
+	}
+
+	if fi, err := os.Stat("immigrant"); err == nil && fi.IsDir() == true {
+		return "immigrant"
+	}
+
+	if fi, err := os.Stat(".immigrant"); err == nil && fi.IsDir() == true {
+		return ".immigrant"
+	}
+
+	return ""
 }
 
 // Shutdown triggers correct shutdown
@@ -42,5 +65,4 @@ func main() {
 		<-sigs
 		Shutdown(ExitOk)
 	}()
-
 }
