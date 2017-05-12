@@ -4,13 +4,17 @@ import (
 	"flag"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 )
 
 const (
-	ExitOk       int    = 0
-	ExitErr      int    = 1
-	ConfigENVVar string = "IMMIGRANT_CONFIG_DIR"
+	ExitOk          int    = 0
+	ExitErr         int    = 1
+	ConfigENVVar    string = "IMMIGRANT_CONFIG_DIR"
+	InvalidCommand  int    = -1
+	MigrateCommand  int    = 0
+	RollbackCommand int    = 1
 )
 
 var (
@@ -44,6 +48,23 @@ func ConfigPath() string {
 	}
 
 	return ""
+}
+
+// Command returns the command to be run
+func Command() int {
+	if flag.NArg() == 0 {
+		return InvalidCommand
+	}
+
+	cmd := strings.ToLower(flag.Arg(0))
+	switch cmd {
+	case "migrate":
+		return MigrateCommand
+	case "rollback":
+		return RollbackCommand
+	}
+
+	return InvalidCommand
 }
 
 // Shutdown triggers correct shutdown
