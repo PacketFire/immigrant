@@ -38,6 +38,7 @@ func (this DSN) String() string {
 		this.proto,
 		this.host,
 		this.database)
+
 	if this.params != "" {
 		dsn = fmt.Sprintf("%s?%s", dsn, this.params)
 	}
