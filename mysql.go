@@ -33,6 +33,12 @@ func (this errHeadDoesNotExist) Error() string {
 
 // Type Defs
 
+type stateTrackerRevision struct {
+	Id           int
+	RevisionID   string
+	RevisionJSON string
+}
+
 // MysqlDriver stores configuration information along with the DB connection
 // management struct.
 type MysqlDriver struct {
@@ -129,12 +135,12 @@ func (this *MysqlDriver) State() (*Revision, error) {
 	defer rows.Close()
 
 	for rows.Next() {
-		row := make(map[string]string)
+		row := new(stateTrackerRevision)
 		if err = rows.Scan(row); err != nil {
 			return nil, errCurrentRemoteState{}
 		}
 
-		if err = json.Unmarshal([]byte(row["revisionJSON"]), rHead); err != nil {
+		if err = json.Unmarshal([]byte(row.RevisionJSON), rHead); err != nil {
 			return nil, err
 		}
 
