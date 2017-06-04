@@ -6,8 +6,7 @@ import (
 )
 
 const (
-	StateCreate string = `
-CREATE DATABASE immStateMan if not exists;
+	StateCreate string = `CREATE DATABASE immStateMan if not exists;
 use immStateMan;
 CREATE TABLE sequence_tracker (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -61,8 +60,22 @@ func (this *MysqlDriver) initStateManager() error {
 // the signal handler is invoked. On success, nil is pushed over the channel.
 // On failure, an error is pushed over the channel.
 func (this *MysqlDriver) Migrate(r Revision, c chan error) {
+	tx, err := this.Db.Begin()
+	if err != nil {
+		c <- err
+		return
+	}
 
-	c <- nil
+	for _, mig := range r.Migrate {
+		if _, err = tx.Exec(mig); err != nil {
+			tx.Rollback()
+			c <- err
+			return
+		}
+	}
+
+	err = tx.Commit()
+	c <- err
 }
 
 // Rollback takes a revision and a channel and attempts to execute all rollback
@@ -71,8 +84,22 @@ func (this *MysqlDriver) Migrate(r Revision, c chan error) {
 // the signal handler is invoked. On success, nil is pushed over the channel.
 // On failure, an error is pushed over the channel.
 func (this *MysqlDriver) Rollback(r Revision, c chan error) {
+	tx, err := this.Db.Begin()
+	if err != nil {
+		c <- err
+		return
+	}
 
-	c <- nil
+	for _, mig := range r.Rollback {
+		if _, err = tx.Exec(mig); err != nil {
+			tx.Rollback()
+			c <- err
+			return
+		}
+	}
+
+	err = tx.Commit()
+	c <- err
 }
 
 // State returns the current revision that the database is at. On success a
