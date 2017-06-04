@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	StateCreate string = `CREATE DATABASE immStateMan if not exists;
+	stateCreate string = `CREATE DATABASE immStateMan if not exists;
 use immStateMan;
 CREATE TABLE sequence_tracker (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -31,7 +31,7 @@ func (this *MysqlDriver) Init(ctx map[string]string) error {
 		ctx["password"],
 		ctx["proto"],
 		ctx["host"],
-		ctx["database"],
+		"/",
 		ctx["params"])
 
 	db, err := sql.Open("mysql", this.Config.String())
@@ -44,13 +44,10 @@ func (this *MysqlDriver) Init(ctx map[string]string) error {
 		return err
 	}
 
-	return nil
-}
+	if err = this.initStateManager(); err != nil {
+		return err
+	}
 
-// initStateManager attempts to create the state tracker database and tables
-// and is only meant to be called by the Init method. On success, nil is
-// returned. On failure an error is returned.
-func (this *MysqlDriver) initStateManager() error {
 	return nil
 }
 
@@ -107,6 +104,23 @@ func (this *MysqlDriver) Rollback(r Revision, c chan error) {
 func (this *MysqlDriver) State() *Revision {
 
 	return new(Revision)
+}
+
+// initStateManager attempts to create the state tracker database and tables
+// and is only meant to be called by the Init method. On success, nil is
+// returned. On failure an error is returned.
+func (this *MysqlDriver) initStateManager() error {
+	stmt, err := this.Db.Prepare(stateCreate)
+	if err != nil {
+		return err
+	}
+
+	_, err = stmt.Exec()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // Closes the DB object associated with the driver.
