@@ -3,6 +3,12 @@
 	"ignore": "test",
 	"package": [
 		{
+			"checksumSHA1": "Ube1AAmhqrtUybqayzBTI7qWo/4=",
+			"path": "github.com/go-sql-driver/mysql",
+			"revision": "e3f0fdcf52770a162d5a4540ddb8d9957ff456d1",
+			"revisionTime": "2017-06-01T06:26:16Z"
+		},
+		{
 			"checksumSHA1": "fALlQNY1fM99NesfLJ50KguWsio=",
 			"path": "gopkg.in/yaml.v2",
 			"revision": "cd8b52f8269e0feb286dfeef29f8fe4d5b397e0b",
