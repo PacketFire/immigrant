@@ -93,4 +93,15 @@ func main() {
 		<-ml
 		Shutdown(ExitOk)
 	}()
+
+	cp := ConfigPath()
+	config, err := ParseConfig(cp)
+	if err != nil {
+		Shutdown(ExitErr)
+	}
+
+	switch strings.ToLower(config["type"]) {
+	case "mysql":
+	default:
+	}
 }
