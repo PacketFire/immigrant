@@ -100,6 +100,7 @@ func main() {
 		Shutdown(ExitErr)
 	}
 
+	// Ugly but will work, instantiate drive by type
 	switch strings.ToLower(config["type"]) {
 	case "mysql":
 		drv := &MysqlDriver{}
@@ -107,6 +108,14 @@ func main() {
 		if err != nil {
 			Shutdown(ExitErr)
 		}
+	default:
+		Shutdown(ExitErr)
+	}
+
+	// Command router
+	switch Command() {
+	case MigrateCommand:
+	case RollbackCommand:
 	default:
 		Shutdown(ExitErr)
 	}
