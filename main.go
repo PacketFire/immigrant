@@ -13,8 +13,7 @@ const (
 	ExitErr         int    = 1
 	ConfigENVVar    string = "IMMIGRANT_CONFIG_DIR"
 	InvalidCommand  int    = -1
-	MigrateCommand  int    = 0
-	RollbackCommand int    = 1
+	ConvergeCommand int    = 0
 )
 
 var (
@@ -58,10 +57,8 @@ func Command() int {
 
 	cmd := strings.ToLower(flag.Arg(0))
 	switch cmd {
-	case "migrate":
-		return MigrateCommand
-	case "rollback":
-		return RollbackCommand
+	case "converge":
+		return ConvergeCommand
 	}
 
 	return InvalidCommand
@@ -70,6 +67,14 @@ func Command() int {
 // Shutdown triggers correct shutdown
 func Shutdown(code int) {
 	os.Exit(code)
+}
+
+// Converge takes a driver, sequence and synchronization channel and attempts
+// to converge the remote database to local head. The ml channel is provided to
+// synchronize errors handlers and report errors. On success, nil is pushed to
+// the ml channel. On failure, an error is pushed to the ml channel.
+func Converge(drv Driver, seq Sequence, ml chan error) {
+	ml <- nil
 }
 
 func main() {
@@ -114,8 +119,7 @@ func main() {
 
 	// Command router
 	switch Command() {
-	case MigrateCommand:
-	case RollbackCommand:
+	case ConvergeCommand:
 	default:
 		Shutdown(ExitErr)
 	}
