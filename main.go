@@ -102,6 +102,12 @@ func main() {
 
 	switch strings.ToLower(config["type"]) {
 	case "mysql":
+		drv := &MysqlDriver{}
+		err = drv.Init(config)
+		if err != nil {
+			Shutdown(ExitErr)
+		}
 	default:
+		Shutdown(ExitErr)
 	}
 }
