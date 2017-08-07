@@ -6,8 +6,8 @@ import (
 	"testing"
 )
 
-func TestWalk(t *testing.T) {
-	rb, err := Walk(revisionTestDir)
+func TestParseRevisions(t *testing.T) {
+	rb, err := ParseRevisions(revisionTestDir)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -17,30 +17,30 @@ func TestWalk(t *testing.T) {
 	}
 }
 
-func TestEmptyWalk(t *testing.T) {
+func TestEmptyParseRevisions(t *testing.T) {
 	// Create dependent directory
 	td := filepath.Join(emptyRevisionTestDir, "revisions")
 	os.Mkdir(emptyRevisionTestDir, 0755)
 	os.Mkdir(td, 0755)
-	_, err := Walk(emptyRevisionTestDir)
+	_, err := ParseRevisions(emptyRevisionTestDir)
 	if err != nil {
 		t.Fatal(err)
 	}
 }
 
 func TestWalkNonYamlFile(t *testing.T) {
-	rev, err := Walk(revisionTestDir)
+	rev, err := ParseRevisions(revisionTestDir)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	if _, p := rev.Revision("revision_txt"); p == true {
-		t.Fatal("Walk should not parse non yaml files.")
+		t.Fatal("ParseRevisions should not parse non yaml files.")
 	}
 }
 
 func TestYAMLFileExtensions(t *testing.T) {
-	rb, err := Walk(fileExtTestDir)
+	rb, err := ParseRevisions(fileExtTestDir)
 	if err != nil {
 		t.Fatal(err)
 	}

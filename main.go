@@ -105,6 +105,16 @@ func main() {
 		Shutdown(ExitErr)
 	}
 
+  _, err = ParseSequence(cp)
+  if err != nil {
+    Shutdown(ExitErr)
+  }
+
+  _, err = ParseRevisions(cp)
+  if err != nil {
+    Shutdown(ExitErr)
+  }
+
 	// Ugly but will work, instantiate drive by type
 	switch strings.ToLower(config["type"]) {
 	case "mysql":
