@@ -9,8 +9,11 @@ import (
 	"path/filepath"
 )
 
+// Sequence stores the unmartialed revision sequence as well as an ordered list
+// of the revisions for use internally by the cli.
 type Sequence struct {
 	Revisions []string `yaml:"revisions"`
+  revMap *Revisions
 }
 
 // Parse sequence will take a path to the config directory and attempt to open
