@@ -3,8 +3,12 @@ services:
   immigrant:
     build: .
     volumes:
-      - .:/code
-  mysql:
+      - ./examples:/code/.immigrant
+      - ./immigrant:/bin/immigrant
+    links:
+      - imm_mysql
+      - imm_mysql:mysql
+  imm_mysql:
     image: mysql:5.7
     environment: 
       - MYSQL_ROOT_PASSWORD=password
