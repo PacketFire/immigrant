@@ -49,8 +49,8 @@ func ConfigPath() string {
 	return ""
 }
 
-// Command returns the command to be run
-func Command() int {
+// command returns the command to be run
+func command() int {
 	if flag.NArg() == 0 {
 		return InvalidCommand
 	}
@@ -128,7 +128,7 @@ func main() {
 	}
 
 	// Command router
-	switch Command() {
+	switch command() {
 	case ConvergeCommand:
 	default:
 		Shutdown(ExitErr)
