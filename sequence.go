@@ -13,7 +13,7 @@ import (
 // of the revisions for use internally by the cli.
 type Sequence struct {
 	Revisions []string `yaml:"revisions"`
-  revMap *Revisions
+	RevMap    *Revisions
 }
 
 // Parse sequence will take a path to the config directory and attempt to open

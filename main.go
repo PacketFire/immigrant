@@ -73,8 +73,29 @@ func Shutdown(code int) {
 // to converge the remote database to local head. The ml channel is provided to
 // synchronize errors handlers and report errors. On success, nil is pushed to
 // the ml channel. On failure, an error is pushed to the ml channel.
-func Converge(drv Driver, seq Sequence, ml chan error) {
+func Converge(drv Driver, seq *Sequence, ml chan error) {
 	ml <- nil
+}
+
+// genSequence takes a configuration path as an argument and attempts to parse
+// the revisions and sequence tree and returns a populated Sequence object on
+// success. On Failure, nil and an error is returned.
+func genSequence(cp string) (*Sequence, error) {
+	// parse the sequence and revisions
+	seq, err := ParseSequence(cp)
+	if err != nil {
+		return nil, err
+	}
+
+	rev, err := ParseRevisions(cp)
+	if err != nil {
+		return nil, err
+	}
+
+	// Assign the Revisions object to the sequence
+	seq.RevMap = rev
+
+	return seq, nil
 }
 
 func main() {
@@ -105,20 +126,16 @@ func main() {
 		Shutdown(ExitErr)
 	}
 
-  _, err = ParseSequence(cp)
-  if err != nil {
-    Shutdown(ExitErr)
-  }
-
-  _, err = ParseRevisions(cp)
-  if err != nil {
-    Shutdown(ExitErr)
-  }
+	seq, err := genSequence(cp)
+	if err != nil {
+		Shutdown(ExitErr)
+	}
 
 	// Ugly but will work, instantiate drive by type
+	var drv Driver
 	switch strings.ToLower(config["type"]) {
 	case "mysql":
-		drv := &MysqlDriver{}
+		drv = &MysqlDriver{}
 		err = drv.Init(config)
 		if err != nil {
 			Shutdown(ExitErr)
@@ -130,7 +147,15 @@ func main() {
 	// Command router
 	switch command() {
 	case ConvergeCommand:
+		Converge(drv, seq, ml)
 	default:
 		Shutdown(ExitErr)
 	}
+
+	err = <-ml
+	if err != nil {
+		Shutdown(ExitErr)
+	}
+
+	Shutdown(ExitOk)
 }

@@ -14,7 +14,7 @@ const (
 	RevisionBuffSize int = 10 //just an arbitrary number
 )
 
-// ParseRevisions takes a path and will traverse the entire directory, 
+// ParseRevisions takes a path and will traverse the entire directory,
 // dispatching the files to the parseRevisions function. If any fatal errors
 // are returned an the returned error will be non-nil. On success a *Revisions
 // is returned. on failure a *Revisions and error is returned.
