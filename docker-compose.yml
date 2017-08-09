@@ -4,7 +4,7 @@ services:
     build: .
     volumes:
       - ./examples:/code/.immigrant
-      - ./immigrant:/bin/immigrant
+      - ./immigrant:/usr/local/bin/immigrant
     links:
       - imm_mysql
       - imm_mysql:mysql
