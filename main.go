@@ -6,11 +6,12 @@ import (
 	"os/signal"
 	"strings"
 	"syscall"
+  "log"
+  "errors"
+  "fmt"
 )
 
 const (
-	ExitOk          int    = 0
-	ExitErr         int    = 1
 	ConfigENVVar    string = "IMMIGRANT_CONFIG_DIR"
 	InvalidCommand  int    = -1
 	ConvergeCommand int    = 0
@@ -65,8 +66,12 @@ func command() int {
 }
 
 // Shutdown triggers correct shutdown
-func Shutdown(code int) {
-	os.Exit(code)
+func Shutdown(err error) {
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  os.Exit(0)
 }
 
 // Converge takes a driver, sequence and synchronization channel and attempts
@@ -99,9 +104,11 @@ func genSequence(cp string) (*Sequence, error) {
 }
 
 func main() {
+  log.Println("--- immigrant ---")
 	defer func() {
 		if err := recover(); err != nil {
-			Shutdown(ExitErr)
+      e := errors.New(fmt.Sprintf("%s", err))
+			Shutdown(e)
 		}
 	}()
 
@@ -110,25 +117,24 @@ func main() {
 	// at the cli. This will prevent any actions from being taken until a
 	// migration has hit a stable state.
 	ml := make(chan error)
-
 	// Signal Handling
 	sigs := make(chan os.Signal)
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 	go func() {
 		<-sigs
 		<-ml
-		Shutdown(ExitOk)
+		Shutdown(nil)
 	}()
 
 	cp := ConfigPath()
 	config, err := ParseConfig(cp)
 	if err != nil {
-		Shutdown(ExitErr)
+		Shutdown(err)
 	}
 
 	seq, err := genSequence(cp)
 	if err != nil {
-		Shutdown(ExitErr)
+		Shutdown(err)
 	}
 
 	// Ugly but will work, instantiate drive by type
@@ -138,10 +144,10 @@ func main() {
 		drv = &MysqlDriver{}
 		err = drv.Init(config)
 		if err != nil {
-			Shutdown(ExitErr)
+			Shutdown(err)
 		}
 	default:
-		Shutdown(ExitErr)
+		Shutdown(err)
 	}
 
 	// Command router
@@ -149,13 +155,13 @@ func main() {
 	case ConvergeCommand:
 		Converge(drv, seq, ml)
 	default:
-		Shutdown(ExitErr)
+		Shutdown(err)
 	}
 
 	err = <-ml
 	if err != nil {
-		Shutdown(ExitErr)
+		Shutdown(err)
 	}
 
-	Shutdown(ExitOk)
+	Shutdown(nil)
 }
