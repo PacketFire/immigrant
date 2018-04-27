@@ -1,7 +1,0 @@
----
-- revision: revision_dup
-  migrate:
-    - migrate 1
-    - migrate 2
-  rollback: 
-    - rollback 1 

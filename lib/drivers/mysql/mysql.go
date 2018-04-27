@@ -1,9 +1,12 @@
-package main
+package mysql
 
 import (
 	"database/sql"
 	"encoding/json"
 	_ "github.com/go-sql-driver/mysql"
+
+  "github.com/ncatelli/immigrant/lib/core"
+  "github.com/ncatelli/immigrant/lib/drivers"
 )
 
 const (
@@ -42,7 +45,7 @@ type stateTrackerRevision struct {
 // MysqlDriver stores configuration information along with the DB connection
 // management struct.
 type MysqlDriver struct {
-	Config DSN
+	drivers.Config DSN
 	Db     *sql.DB
 }
 
@@ -79,7 +82,7 @@ func (this *MysqlDriver) Init(ctx map[string]string) error {
 // communicate back to the cli tool whether a migration has completed in case
 // the signal handler is invoked. On success, nil is pushed over the channel.
 // On failure, an error is pushed over the channel.
-func (this *MysqlDriver) Migrate(r Revision, c chan error) {
+func (this *MysqlDriver) Migrate(r core.Revision, c chan error) {
 	tx, err := this.Db.Begin()
 	if err != nil {
 		c <- err
@@ -103,7 +106,7 @@ func (this *MysqlDriver) Migrate(r Revision, c chan error) {
 // communicate back to the cli tool whether a migration has completed in case
 // the signal handler is invoked. On success, nil is pushed over the channel.
 // On failure, an error is pushed over the channel.
-func (this *MysqlDriver) Rollback(r Revision, c chan error) {
+func (this *MysqlDriver) Rollback(r core.Revision, c chan error) {
 	tx, err := this.Db.Begin()
 	if err != nil {
 		c <- err
@@ -125,8 +128,8 @@ func (this *MysqlDriver) Rollback(r Revision, c chan error) {
 // State returns the current revision that the database is at. On success a
 // pointer to a populated Revision is return and nil is returned. On failure,
 // nil and an error are returned.
-func (this *MysqlDriver) State() (*Revision, error) {
-	rHead := new(Revision)
+func (this *MysqlDriver) State() (*core.Revision, error) {
+	rHead := new(core.Revision)
 
 	rows, err := this.Db.Query("SELECT * FROM imm_sequence_tracker ORDER BY id DESC LIMIT 0, 1")
 	if err != nil {
