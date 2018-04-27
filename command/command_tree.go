@@ -1,0 +1,15 @@
+package command
+
+import (
+	"github.com/ncatelli/immigrant/command/version"
+
+	"github.com/mitchellh/cli"
+)
+
+const (
+	cliVersion string = "0.0.1"
+)
+
+func init() {
+	Register("version", func(ui cli.Ui) (cli.Command, error) { return version.New(ui, cliVersion), nil })
+}
