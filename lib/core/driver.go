@@ -1,4 +1,4 @@
-package main
+package core
 
 // Driver defines the necessary methods to interface a database with
 // immigrant. State tracking, Migrations and Rollbacks should mostly be

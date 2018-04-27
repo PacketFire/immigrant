@@ -1,4 +1,4 @@
-package main
+package core
 
 type Revision struct {
 	Revision string   `yaml:"revision"`
