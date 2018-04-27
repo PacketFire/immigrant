@@ -1,11 +1,15 @@
-package main
+package config
 
 import (
 	"testing"
 )
 
+const (
+  testDir string = "test/"
+)
+
 func TestParseConfig(t *testing.T) {
-	c, err := ParseConfig(revisionTestDir)
+	c, err := ParseConfig(testDir)
 	if err != nil {
 		t.Errorf("Unable to parse Config.")
 	}

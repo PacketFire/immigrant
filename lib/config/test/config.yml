@@ -1,0 +1,7 @@
+---
+type: mysql
+database: blog_db
+username: root
+password: root
+host: example.coom
+port: "3306"
