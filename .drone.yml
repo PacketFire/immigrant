@@ -1,0 +1,17 @@
+workspace:
+  base: /go/src
+  path: github.com/ncatelli/immigrant
+
+pipeline:
+  fmt:
+    image: golang
+    commands:
+      - go fmt
+  test:
+    image: golang
+    commands:
+      - go test
+  build:
+    image: golang
+    commands:
+      - go build
