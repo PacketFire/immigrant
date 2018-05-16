@@ -6,11 +6,11 @@ pipeline:
   fmt:
     image: golang
     commands:
-      - go fmt
+      - go fmt ./...
   test:
     image: golang
     commands:
-      - go test
+      - go test ./...
   build:
     image: golang
     commands:
