@@ -45,7 +45,7 @@ type stateTrackerRevision struct {
 // MysqlDriver stores configuration information along with the DB connection
 // management struct.
 type MysqlDriver struct {
-	drivers.Config DSN
+	Config    drivers.DSN
 	Db     *sql.DB
 }
 
@@ -53,7 +53,7 @@ type MysqlDriver struct {
 // DB connection and bootstrap immigrant's state tracker table. on success nil
 // is returned. On failure, the corresponding errors are returned.
 func (this *MysqlDriver) Init(ctx map[string]string) error {
-	this.Config = NewDSN(ctx["username"],
+	this.Config = drivers.NewDSN(ctx["username"],
 		ctx["password"],
 		ctx["proto"],
 		ctx["host"],
