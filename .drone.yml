@@ -3,19 +3,16 @@ workspace:
   path: github.com/ncatelli/immigrant
 
 pipeline:
-  fmt:
-    image: ${GO_DOCKER_IMG} 
-    commands:
-      - make fmt
   test:
-    image: ${GO_DOCKER_IMG}
+    image: ncatelli/golang:${GO_DOCKER_TAG}
     commands:
       - make test
   build:
-    image: ${GO_DOCKER_IMG} 
+    image: ncatelli/golang:${GO_DOCKER_TAG}
     commands:
       - make
 
 matrix:
   GO_DOCKER_IMG: 
-    - 'ncatelli/golang:1.10.2-alpine:3.7'
+    - 1.9.6-alpine3.7
+    - 1.10.2-alpine3.7
