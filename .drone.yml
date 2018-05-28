@@ -4,15 +4,15 @@ workspace:
 
 pipeline:
   test:
-    image: "ncatelli/golang:${GO_DOCKER_TAG}"
+    image: ncatelli/golang:${GO_DOCKER_TAG}
     commands:
       - make test
   build:
-    image: "ncatelli/golang:${GO_DOCKER_TAG}"
+    image: ncatelli/golang:${GO_DOCKER_TAG}
     commands:
       - make
 
 matrix:
-  GO_DOCKER_IMG: 
+  GO_DOCKER_TAG: 
     - 1.9.6-alpine3.7
     - 1.10.2-alpine3.7
