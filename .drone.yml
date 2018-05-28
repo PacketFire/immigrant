@@ -4,11 +4,11 @@ workspace:
 
 pipeline:
   test:
-    image: ncatelli/golang:${GO_DOCKER_TAG}
+    image: "ncatelli/golang:${GO_DOCKER_TAG}"
     commands:
       - make test
   build:
-    image: ncatelli/golang:${GO_DOCKER_TAG}
+    image: "ncatelli/golang:${GO_DOCKER_TAG}"
     commands:
       - make
 
