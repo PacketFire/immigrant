@@ -16,5 +16,5 @@ fmt:
 	go fmt ./...
 
 clean:
-	rm -f aengcli; \
+	rm -f immigrant; \
 	docker rmi -f ${IMGNAME}:`cat "version.txt"`

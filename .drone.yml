@@ -4,14 +4,17 @@ workspace:
 
 pipeline:
   fmt:
-    image: golang
+    image: ${GO_DOCKER_IMG} 
     commands:
-      - go fmt ./...
+      - make fmt
   test:
-    image: golang
+    image: ${GO_DOCKER_IMG}
     commands:
-      - go test ./...
+      - make test
   build:
-    image: golang
+    image: ${GO_DOCKER_IMG} 
     commands:
-      - go build
+      - make
+
+  matrix:
+    GO_DOCKER_IMG: 'ncatelli/golang:1.10.2-alpine:3.7'
