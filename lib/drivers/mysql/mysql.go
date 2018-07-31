@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	_ "github.com/go-sql-driver/mysql"
 
-  "github.com/ncatelli/immigrant/lib/core"
-  "github.com/ncatelli/immigrant/lib/drivers"
+	"github.com/ncatelli/immigrant/lib/core"
+	"github.com/ncatelli/immigrant/lib/drivers"
 )
 
 const (
@@ -45,7 +45,7 @@ type stateTrackerRevision struct {
 // MysqlDriver stores configuration information along with the DB connection
 // management struct.
 type MysqlDriver struct {
-	Config    drivers.DSN
+	Config drivers.DSN
 	Db     *sql.DB
 }
 

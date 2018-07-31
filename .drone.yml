@@ -3,15 +3,12 @@ workspace:
   path: github.com/ncatelli/immigrant
 
 pipeline:
-  fmt:
-    image: golang
-    commands:
-      - go fmt ./...
-  test:
-    image: golang
-    commands:
-      - go test ./...
   build:
-    image: golang
+    image: ncatelli/golang:${GO_DOCKER_TAG}
     commands:
-      - go build
+      - make
+
+matrix:
+  GO_DOCKER_TAG: 
+    - 1.9.6-alpine3.7
+    - 1.10.2-alpine3.7

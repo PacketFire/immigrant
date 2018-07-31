@@ -1,1 +1,6 @@
+# ignore vagrant data
 .vagrant
+
+# ignore immigrant binary
+immigrant
+main
