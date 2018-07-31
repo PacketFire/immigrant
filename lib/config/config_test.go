@@ -5,7 +5,7 @@ import (
 )
 
 const (
-  testDir string = "test/"
+	testDir string = "test/"
 )
 
 func TestParseConfig(t *testing.T) {
