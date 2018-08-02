@@ -8,5 +8,5 @@ services:
   builder:
     image: alpine:3.7
   
-  migration:
+  workspace:
     image: golang:1.10.1-alpine3.7
