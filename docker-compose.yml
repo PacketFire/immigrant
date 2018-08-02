@@ -4,3 +4,9 @@ services:
     image: mysql:5.7
     environment: 
       - MYSQL_ROOT_PASSWORD=password
+
+  builder:
+    image: alpine:3.7
+  
+  migration:
+    image: golang:1.10.1-alpine3.7
