@@ -4,11 +4,14 @@ workspace:
 
 pipeline:
   build:
-    image: ncatelli/golang:${GO_DOCKER_TAG}
+    image: ncatelli/golang:1.10.2-alpine3.7
     commands:
       - make
 
-matrix:
-  GO_DOCKER_TAG: 
-    - 1.9.6-alpine3.7
-    - 1.10.2-alpine3.7
+  docker:
+    image: plugins/docker
+    repo: packetfire/immigrant
+    auto_tag: true
+    secrets: [ docker_username, docker_password ]
+    when:
+      branch: master
