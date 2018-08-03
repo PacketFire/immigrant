@@ -3,7 +3,7 @@ ARG BUILDIMG="golang:1.10.1-alpine3.7"
 FROM $BUILDIMG as builder
 
 ENV GOPATH=/go
-ENV GIT_USER=ncatelli
+ENV GIT_USER=PacketFire
 ENV SCM_PROVIDER=github.com
 ENV APP_NAME=immigrant
 
