@@ -1,6 +1,6 @@
 workspace:
   base: /go/src
-  path: github.com/ncatelli/immigrant
+  path: github.com/PacketFire/immigrant
 
 pipeline:
   build:

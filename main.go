@@ -6,8 +6,8 @@ import (
 	"log"
 	"os"
 
+	"github.com/PacketFire/immigrant/command"
 	"github.com/mitchellh/cli"
-	"github.com/ncatelli/immigrant/command"
 )
 
 func main() {

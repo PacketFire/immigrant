@@ -1,7 +1,7 @@
 package command
 
 import (
-	"github.com/ncatelli/immigrant/command/version"
+	"github.com/PacketFire/immigrant/command/version"
 
 	"github.com/mitchellh/cli"
 )

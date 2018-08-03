@@ -1,4 +1,4 @@
-IMGNAME="ncatelli/immigrant"
+IMGNAME="packetfire/immigrant"
 
 build: | fmt test
 	go build
