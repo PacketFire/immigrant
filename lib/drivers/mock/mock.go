@@ -1,7 +1,7 @@
 package mock
 
 import (
-	"github.com/ncatelli/immigrant/lib/core"
+	"github.com/PacketFire/immigrant/lib/core"
 )
 
 type MockDriver struct {
@@ -15,7 +15,7 @@ func (this *MockDriver) Init(config map[string]string) error {
 func Migrate(r core.Revision, ec chan error) {
 	for _, mig := range r.Migrate {
 		if _, err = mig; err != nil {
-			c <- err
+			ec <- err
 			return
 		}
 	}
@@ -24,7 +24,7 @@ func Migrate(r core.Revision, ec chan error) {
 func Rollback(r core.Revision, ec chan error) {
 	for _, mig := range r.Rollback {
 		if _, err = mig; err != nil {
-			c <- err
+			ec <- err
 			return
 		}
 	}
