@@ -12,7 +12,7 @@ func (this *MockDriver) Init(config map[string]string) error {
 	return nil
 }
 
-func Migrate(r core.Revision, ec chan error) {
+func (this *MockDriver) Migrate(r core.Revision, ec chan error) {
 	for _, mig := range r.Migrate {
 		if _, err = mig; err != nil {
 			ec <- err
@@ -21,7 +21,7 @@ func Migrate(r core.Revision, ec chan error) {
 	}
 }
 
-func Rollback(r core.Revision, ec chan error) {
+func (this *MockDriver) Rollback(r core.Revision, ec chan error) {
 	for _, mig := range r.Rollback {
 		if _, err = mig; err != nil {
 			ec <- err
@@ -30,10 +30,8 @@ func Rollback(r core.Revision, ec chan error) {
 	}
 }
 
-func State(this *MockDriver) *core.Revision {
-	fmt.Println(&core.Revision)
-	return &core.Revision{}
-
+func (this *MockDriver) State() (*core.Revision, error) {
+	return nil, &core.Revision{}
 }
 
 func Close() {
