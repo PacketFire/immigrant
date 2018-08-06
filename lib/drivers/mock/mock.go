@@ -27,12 +27,11 @@ func (this *MockDriver) Rollback(r *core.Revision, ec chan error) {
 	ec <- nil
 }
 
-func (this *MockDriver) State(r *core.Revision, ec chan error) {
-	if len(this.Revisions) <= 0 {
+func (this *MockDriver) State(ec chan error) *core.Revision {
+	if len(this.Revisions) == 0 {
 		ec <- errors.New("No revisions found.")
 	}
-	this.Revisions = this.Revisions
-	ec <- nil
+	return &this.Revisions[len(this.Revisions)-1]
 }
 
 func Close() {
