@@ -1,13 +1,17 @@
 package mock
 
-func (this *MockDriver) TestMigrate() {
+import (
+	"testing"
+)
+
+func (this *MockDriver) TestMigrate(t *testing.T) {
 
 }
 
-func (this *MockDriver) TestRollBack() {
+func (this *MockDriver) TestRollBack(t *testing.T) {
 
 }
 
-func (this *MockDriver) TestState() {
+func (this *MockDriver) TestState(t *testing.T) {
 
 }
