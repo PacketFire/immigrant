@@ -8,9 +8,6 @@ import (
 )
 
 func TestMockDriver_Init(t *testing.T) {
-	type args struct {
-		config map[string]string
-	}
 	tests := []struct {
 		name    string
 		this    *MockDriver
@@ -58,7 +55,6 @@ func TestMockDriver_Rollback(t *testing.T) {
 			tt.this.Rollback(tt.args.r, tt.args.ec)
 		})
 	}
-}
 
 func TestMockDriver_State(t *testing.T) {
 	type args struct {
@@ -77,4 +73,3 @@ func TestMockDriver_State(t *testing.T) {
 			}
 		})
 	}
-}
