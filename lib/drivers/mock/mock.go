@@ -13,10 +13,12 @@ func (this *MockDriver) Init(config map[string]string) error {
 	return nil
 }
 
-func Migrate(r core.Revision, ec chan error) {
+func Migrate(r core.Revision) error {
+  return nil
 }
 
-func Rollback(r core.Revision, ec chan error) {
+func Rollback(r core.Revision) error {
+  return nil
 }
 
 func State() *core.Revision {
