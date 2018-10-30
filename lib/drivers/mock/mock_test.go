@@ -7,69 +7,47 @@ import (
 	"github.com/PacketFire/immigrant/lib/core"
 )
 
-func TestMockDriver_Init(t *testing.T) {
-	tests := []struct {
-		name    string
-		this    *MockDriver
-		args    args
-		wantErr bool
-	}{}
+var ec chan error
+var name string
+var this *MockDriver
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if err := tt.this.Init(tt.args.config); (err != nil) != tt.wantErr {
-				t.Errorf("MockDriver.Init() error = %v, wantErr %v", err, tt.wantErr)
-			}
-		})
-	}
-}
 func TestMockDriver_Migrate(t *testing.T) {
-	type args struct {
-		r  *core.Revision
-		ec chan error
+	name = "revision 1"
+	rs := &core.Revision{
+		Revision: "1-create-test-table",
+		Migrate:  []string{"create table test ( `id` int(11) not null, primary key (`id`));"},
+		Rollback: []string{"drop table test"},
 	}
-	tests := []struct {
-		name string
-		this *MockDriver
-		args args
-	}{}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			tt.this.Migrate(tt.args.r, tt.args.ec)
-		})
-	}
+
+	t.Run(name, func(t *testing.T) {
+		this.Migrate(rs, ec)
+	})
 }
 
 func TestMockDriver_Rollback(t *testing.T) {
-	type args struct {
-		r  *core.Revision
-		ec chan error
-	}
-	tests := []struct {
-		name string
-		this *MockDriver
-		args args
-	}{}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			tt.this.Rollback(tt.args.r, tt.args.ec)
-		})
+	name = "revision 1"
+	rs := &core.Revision{
+		Revision: "1-create-test-table",
+		Migrate:  []string{"create table test ( `id` int(11) not null, primary key (`id`));"},
+		Rollback: []string{"drop table test"},
 	}
 
+	t.Run(name, func(t *testing.T) {
+		this.Rollback(rs, ec)
+	})
+}
+
 func TestMockDriver_State(t *testing.T) {
-	type args struct {
-		ec chan error
-	}
 	tests := []struct {
 		name string
 		this *MockDriver
-		args args
 		want *core.Revision
 	}{}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.this.State(tt.args.ec); !reflect.DeepEqual(got, tt.want) {
+			if got := tt.this.State(); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("MockDriver.State() = %v, want %v", got, tt.want)
 			}
 		})
 	}
+}
