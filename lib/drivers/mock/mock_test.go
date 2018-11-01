@@ -9,10 +9,10 @@ import (
 
 var ec chan error
 var name string
-var this *MockDriver
+var this MockDriver
 
 func TestMockDriver_Migrate(t *testing.T) {
-	name = "revision 1"
+	name = "migrate"
 	rs := &core.Revision{
 		Revision: "1-create-test-table",
 		Migrate:  []string{"create table test ( `id` int(11) not null, primary key (`id`));"},
@@ -21,11 +21,17 @@ func TestMockDriver_Migrate(t *testing.T) {
 
 	t.Run(name, func(t *testing.T) {
 		this.Migrate(rs, ec)
+
+		if len(this.Revisions) == 1 {
+			if !reflect.DeepEqual(this.Revisions[0], *rs) {
+				t.Log("failed")
+			}
+		}
 	})
 }
 
 func TestMockDriver_Rollback(t *testing.T) {
-	name = "revision 1"
+	name = "rollback"
 	rs := &core.Revision{
 		Revision: "1-create-test-table",
 		Migrate:  []string{"create table test ( `id` int(11) not null, primary key (`id`));"},
@@ -34,20 +40,32 @@ func TestMockDriver_Rollback(t *testing.T) {
 
 	t.Run(name, func(t *testing.T) {
 		this.Rollback(rs, ec)
+
+		if len(this.Revisions) != 0 {
+			t.Log("failed")
+		}
 	})
 }
 
 func TestMockDriver_State(t *testing.T) {
-	tests := []struct {
-		name string
-		this *MockDriver
-		want *core.Revision
-	}{}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.this.State(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("MockDriver.State() = %v, want %v", got, tt.want)
-			}
-		})
+	name = "state"
+	rs := &core.Revision{
+		Revision: "1-create-test-table",
+		Migrate:  []string{"create table test ( `id` int(11) not null, primary key (`id`));"},
+		Rollback: []string{"drop table test"},
 	}
+
+	rs2 := &core.Revision{
+		Revision: "2-create-test2-table",
+		Migrate:  []string{"create table test2 ( `id` int(11) not null, primary key (`id`));"},
+		Rollback: []string{"drop table test2"},
+	}
+
+	t.Run(name, func(t *testing.T) {
+		this.Migrate(rs, ec)
+		this.Migrate(rs2, ec)
+		if !reflect.DeepEqual(*this.State(), this.Revisions[len(this.Revisions)-1]) {
+			t.Log("failed")
+		}
+	})
 }
