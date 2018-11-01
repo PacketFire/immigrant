@@ -6,21 +6,30 @@ import (
 
 type MockDriver struct {
 	Revisions []core.Revision
-	State     core.Revision
 }
 
 func (this *MockDriver) Init(config map[string]string) error {
 	return nil
 }
 
-func Migrate(r core.Revision, ec chan error) {
+func (this *MockDriver) Migrate(r *core.Revision, ec chan error) {
+	this.Revisions = append(this.Revisions, *r)
 }
 
-func Rollback(r core.Revision, ec chan error) {
+func (this *MockDriver) Rollback(r *core.Revision, ec chan error) {
+	//	go func() {
+	if len(this.Revisions) == 0 {
+		//			ec <- errors.New("No revisions applied")
+		return
+	} else {
+		this.Revisions = this.Revisions[:len(this.Revisions)-1]
+		//			ec <- nil
+	}
+	//	}()
 }
 
-func State() *core.Revision {
-	return &core.Revision{}
+func (this *MockDriver) State() *core.Revision {
+	return &this.Revisions[len(this.Revisions)-1]
 }
 
 func Close() {
