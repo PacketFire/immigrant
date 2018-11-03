@@ -6,9 +6,9 @@ pipeline:
   build:
     image: ncatelli/golang:1.10.2-alpine3.7
     commands:
-      - make
       - curl https://glide.sh/get | sh
-      - glide init ; glide update ; glide install
+      - glide init
+      - make
 
   docker:
     image: plugins/docker
