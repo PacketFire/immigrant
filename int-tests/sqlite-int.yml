@@ -1,0 +1,16 @@
+version: "2"
+
+services:
+  immigrant:
+    extends:
+      service: immigrant-base
+      file: base.yml
+    networks:
+      - sqlite_int
+  sqlite:
+    image: brockramz/sqlite3:latest
+    networks:
+      - sqlite_int
+
+networks:
+  sqlite_int:

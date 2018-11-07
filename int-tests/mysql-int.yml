@@ -1,0 +1,19 @@
+version: "2"
+
+services:
+  immigrant:
+    extends:
+      service: immigrant-base
+      file: base.yml
+    networks:
+      - mysql_int
+    depends_on:
+      mysql:
+        condition: service_healthy
+  mysql:
+    image: mysql:5.7
+    networks:
+      - mysql_int
+
+networks:
+  mysql_int:
