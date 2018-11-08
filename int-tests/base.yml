@@ -3,3 +3,8 @@ version: "2"
 services:
   immigrant-base:
     image: golang:latest
+    
+volumes:
+  sqlite_vol:
+
+

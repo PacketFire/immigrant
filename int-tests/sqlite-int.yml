@@ -5,12 +5,12 @@ services:
     extends:
       service: immigrant-base
       file: base.yml
-    networks:
-      - sqlite_int
   sqlite:
     image: brockramz/sqlite3:latest
-    networks:
-      - sqlite_int
+    stdin_open: true
+    tty: true
+    volumes:
+      - sqlite_vol:/int-tests/db
 
-networks:
-  sqlite_int:
+volumes:
+  sqlite_vol:
