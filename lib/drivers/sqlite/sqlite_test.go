@@ -9,7 +9,7 @@ import (
 
 var ec chan error
 var name string
-var this SqliteDriver
+var this *SqliteDriver
 
 func TestSqliteDriver_Migrate(t *testing.T) {
 	name = "migrate"
@@ -20,7 +20,7 @@ func TestSqliteDriver_Migrate(t *testing.T) {
 	}
 
 	t.Run(name, func(t *testing.T) {
-		this.Migrate(rs, ec)
+		this.Migrate(*rs, ec)
 
 		if len(this.Revisions) == 1 {
 			if !reflect.DeepEqual(this.Revisions[0], *rs) {
@@ -39,7 +39,7 @@ func TestSqliteDriver_RollBack(t *testing.T) {
 	}
 
 	t.Run(name, func(t *testing.T) {
-		this.Rollback(rs, ec)
+		this.Rollback(*rs, ec)
 
 		if len(this.Revisions) != 0 {
 			t.Log("failed")
@@ -62,8 +62,8 @@ func TestSqliteDriver_State(t *testing.T) {
 	}
 
 	t.Run(name, func(t *testing.T) {
-		this.Migrate(rs, ec)
-		this.Migrate(rs2, ec)
+		this.Migrate(*rs, ec)
+		this.Migrate(*rs2, ec)
 		if !reflect.DeepEqual(*this.State(), this.Revisions[len(this.Revisions)-1]) {
 			t.Log("failed")
 		}

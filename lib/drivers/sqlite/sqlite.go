@@ -42,10 +42,12 @@ type stateTrackerRevision struct {
 }
 
 type SqliteDriver struct {
-	Db *sql.DB
+	Db        *sql.DB
+	Revisions []core.Revision
 }
 
 func (this *SqliteDriver) Init(filepath string) error {
+	filepath = "db/immigrant.db"
 	db, err := sql.Open("sqlite3", filepath)
 	if err != nil {
 		return err
@@ -93,29 +95,29 @@ func (this *SqliteDriver) Rollback(r core.Revision, c chan error) {
 	c <- err
 }
 
-func (this *SqliteDriver) State() (*core.Revision, error) {
+func (this *SqliteDriver) State() *core.Revision {
 	rHead := new(core.Revision)
 
 	rows, err := this.Db.Query("SELECT * FROM imm_sequence_tracker ORDER BY id DESC LIMIT 0, 1")
 	if err != nil {
-		return nil, err
+		return nil
 	}
 	defer rows.Close()
 
 	for rows.Next() {
 		row := new(stateTrackerRevision)
 		if err = rows.Scan(row); err != nil {
-			return nil, errCurrentRemoteState{}
+			return nil
 		}
 
 		if err = json.Unmarshal([]byte(row.RevisionJSON), rHead); err != nil {
-			return nil, err
+			return nil
 		}
 
-		return rHead, nil
+		return rHead
 	}
 
-	return nil, errHeadDoesNotExist{}
+	return nil
 }
 
 func (this *SqliteDriver) initStateManager() error {
