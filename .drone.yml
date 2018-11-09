@@ -8,7 +8,6 @@ pipeline:
     commands:
       - apk update ; apk add curl
       - curl https://glide.sh/get | sh
-      - glide init
       - make
 
   docker:
