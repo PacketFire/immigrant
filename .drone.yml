@@ -6,7 +6,7 @@ pipeline:
   build:
     image: ncatelli/golang:1.10.2-alpine3.7
     commands:
-      - apt-get install curl
+      - apk add curl
       - curl https://glide.sh/get | sh
       - glide init
       - make
