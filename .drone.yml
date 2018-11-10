@@ -6,6 +6,8 @@ pipeline:
   build:
     image: ncatelli/golang:1.10.2-alpine3.7
     commands:
+      - apk update ; apk add curl git
+      - curl https://glide.sh/get | sh
       - make
 
   docker:

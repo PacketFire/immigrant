@@ -1,5 +1,8 @@
 IMGNAME="packetfire/immigrant"
 
+depend:
+	glide update ; glide install
+
 build: | fmt test
 	go build
 

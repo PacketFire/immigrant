@@ -1,6 +1,9 @@
 # ignore vagrant data
 .vagrant
 
+# ignore vendor diffs
+vendor
+
 # ignore immigrant binary
 immigrant
 main

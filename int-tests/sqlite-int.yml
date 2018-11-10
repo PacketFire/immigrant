@@ -1,0 +1,16 @@
+version: "2"
+
+services:
+  immigrant:
+    extends:
+      service: immigrant-base
+      file: base.yml
+  sqlite:
+    image: brockramz/sqlite3:latest
+    stdin_open: true
+    tty: true
+    volumes:
+      - sqlite_vol:/int-tests/db
+
+volumes:
+  sqlite_vol:
