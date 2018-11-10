@@ -1,8 +1,9 @@
 package mock
 
 import (
-	"github.com/PacketFire/immigrant/lib/core"
 	"errors"
+
+	"github.com/PacketFire/immigrant/lib/core"
 )
 
 type MockDriver struct {
@@ -13,18 +14,19 @@ func (this *MockDriver) Init(config map[string]string) error {
 	return nil
 }
 
-func Migrate(r core.Revision) error {
-  this.Revisions = append(this.Revisions, *r)
-  return nil
+func (this *MockDriver) Migrate(r core.Revision) error {
+	this.Revisions = append(this.Revisions, r)
+	return nil
 }
 
-func Rollback(r core.Revision) error {
+func (this *MockDriver) Rollback(r core.Revision) error {
 	if len(this.Revisions) == 0 {
 		return errors.New("No revisions applied.")
 	} else {
 		this.Revisions = this.Revisions[:len(this.Revisions)-1]
-		
-  return nil
+	}
+
+	return nil
 }
 
 func (this *MockDriver) State() *core.Revision {
