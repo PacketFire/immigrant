@@ -1,11 +1,5 @@
 package: .
 import:
-- package: github.com/PacketFire/immigrant
-  subpackages:
-  - command
-  - command/version
-  - lib/core
-  - lib/drivers
 - package: github.com/go-sql-driver/mysql
   version: ^1.4.0
 - package: github.com/mitchellh/cli
