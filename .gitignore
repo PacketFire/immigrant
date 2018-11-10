@@ -3,6 +3,7 @@
 
 # ignore vendor diffs
 vendor
+glide.lock
 
 # ignore immigrant binary
 immigrant

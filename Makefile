@@ -1,18 +1,18 @@
 IMGNAME="packetfire/immigrant"
 
+build: | depend fmt test
+	go build
+
 depend:
 	glide update ; glide install
 
-build: | fmt test
-	go build
-
-build-docker: | fmt test
+build-docker: | depend fmt test
 	docker build -t ${IMGNAME}:`cat "version.txt"` .
 
-test:
+test: | depend
 	go test ./...
 
-fmt: 
+fmt: | depend
 	go fmt ./...
 
 clean:

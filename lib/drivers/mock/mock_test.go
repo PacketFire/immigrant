@@ -13,17 +13,17 @@ var this MockDriver
 
 func TestMockDriver_Migrate(t *testing.T) {
 	name = "migrate"
-	rs := &core.Revision{
+	rs := core.Revision{
 		Revision: "1-create-test-table",
 		Migrate:  []string{"create table test ( `id` int(11) not null, primary key (`id`));"},
 		Rollback: []string{"drop table test"},
 	}
 
 	t.Run(name, func(t *testing.T) {
-		this.Migrate(rs, ec)
+		this.Migrate(rs)
 
 		if len(this.Revisions) == 1 {
-			if !reflect.DeepEqual(this.Revisions[0], *rs) {
+			if !reflect.DeepEqual(this.Revisions[0], rs) {
 				t.Log("failed")
 			}
 		}
@@ -32,14 +32,14 @@ func TestMockDriver_Migrate(t *testing.T) {
 
 func TestMockDriver_Rollback(t *testing.T) {
 	name = "rollback"
-	rs := &core.Revision{
+	rs := core.Revision{
 		Revision: "1-create-test-table",
 		Migrate:  []string{"create table test ( `id` int(11) not null, primary key (`id`));"},
 		Rollback: []string{"drop table test"},
 	}
 
 	t.Run(name, func(t *testing.T) {
-		this.Rollback(rs, ec)
+		this.Rollback(rs)
 
 		if len(this.Revisions) != 0 {
 			t.Log("failed")
@@ -49,21 +49,21 @@ func TestMockDriver_Rollback(t *testing.T) {
 
 func TestMockDriver_State(t *testing.T) {
 	name = "state"
-	rs := &core.Revision{
+	rs := core.Revision{
 		Revision: "1-create-test-table",
 		Migrate:  []string{"create table test ( `id` int(11) not null, primary key (`id`));"},
 		Rollback: []string{"drop table test"},
 	}
 
-	rs2 := &core.Revision{
+	rs2 := core.Revision{
 		Revision: "2-create-test2-table",
 		Migrate:  []string{"create table test2 ( `id` int(11) not null, primary key (`id`));"},
 		Rollback: []string{"drop table test2"},
 	}
 
 	t.Run(name, func(t *testing.T) {
-		this.Migrate(rs, ec)
-		this.Migrate(rs2, ec)
+		this.Migrate(rs)
+		this.Migrate(rs2)
 		if !reflect.DeepEqual(*this.State(), this.Revisions[len(this.Revisions)-1]) {
 			t.Log("failed")
 		}
