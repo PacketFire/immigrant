@@ -55,42 +55,36 @@ func (this *SqliteDriver) Init(filepath string) error {
 	return nil
 }
 
-func (this *SqliteDriver) Migrate(r core.Revision, c chan error) {
+func (this *SqliteDriver) Migrate(r core.Revision) {
 	tx, err := this.Db.Begin()
 	if err != nil {
-		c <- err
 		return
 	}
 
 	for _, mig := range r.Migrate {
 		if _, err = tx.Exec(mig); err != nil {
 			tx.Rollback()
-			c <- err
 			return
 		}
 	}
 
 	err = tx.Commit()
-	c <- err
 }
 
 func (this *SqliteDriver) Rollback(r core.Revision, c chan error) {
 	tx, err := this.Db.Begin()
 	if err != nil {
-		c <- err
 		return
 	}
 
 	for _, mig := range r.Rollback {
 		if _, err = tx.Exec(mig); err != nil {
 			tx.Rollback()
-			c <- err
 			return
 		}
 	}
 
 	err = tx.Commit()
-	c <- err
 }
 
 func (this *SqliteDriver) State() (*core.Revision, error) {
