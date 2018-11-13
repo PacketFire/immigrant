@@ -42,10 +42,12 @@ type stateTrackerRevision struct {
 }
 
 type SqliteDriver struct {
-	Db *sql.DB
+	Db        *sql.DB
+	Revisions []core.Revision
 }
 
-func (this *SqliteDriver) Init(filepath string) error {
+func (this *SqliteDriver) Init() error {
+	filepath := "db/immigrant.db"
 	db, err := sql.Open("sqlite3", filepath)
 	if err != nil {
 		return err
@@ -71,7 +73,7 @@ func (this *SqliteDriver) Migrate(r core.Revision) {
 	err = tx.Commit()
 }
 
-func (this *SqliteDriver) Rollback(r core.Revision, c chan error) {
+func (this *SqliteDriver) Rollback(r core.Revision) {
 	tx, err := this.Db.Begin()
 	if err != nil {
 		return
