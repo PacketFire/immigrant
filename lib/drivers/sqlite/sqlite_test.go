@@ -23,8 +23,10 @@ func TestSqliteDriver_Migrate(t *testing.T) {
 
 		if len(this.Revisions) == 1 {
 			if !reflect.DeepEqual(this.Revisions[0], rs) {
-				t.Log("failed")
+				t.Fatalf("Migration results did not match, received: %s expected: %s", this.Revisions[0], rs)
 			}
+		} else {
+			t.Fatal("Revisions is not required length of one.")
 		}
 	})
 }
@@ -41,7 +43,7 @@ func TestSqliteDriver_RollBack(t *testing.T) {
 		this.Rollback(rs)
 
 		if len(this.Revisions) != 0 {
-			t.Log("failed")
+			t.Fatal("Rollback results do not meet requirements, expected length of zero.")
 		}
 	})
 }
@@ -57,7 +59,7 @@ func TestSqliteDriver_State(t *testing.T) {
 		}
 
 		if !reflect.DeepEqual(check, rHead) {
-			t.Log("failed")
+			t.Fatalf("State did not return expected results, received: %s, expected: %s", check, rHead)
 		}
 	})
 }
