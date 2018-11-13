@@ -26,7 +26,7 @@ func TestSqliteDriver_Migrate(t *testing.T) {
 				t.Fatalf("Migration results did not match, received: %s expected: %s", this.Revisions[0], rs)
 			}
 		} else {
-			t.Fatal("Revisions is not required length of one.")
+			t.Fatalf("Revisions is not required length of one. Length received: %d", len(this.Revisions))
 		}
 	})
 }
