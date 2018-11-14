@@ -74,9 +74,7 @@ func (this *SqliteDriver) Migrate(r core.Revision) {
 }
 
 func (this *SqliteDriver) Rollback(r core.Revision) {
-	if len(this.Revisions) == 0 {
-		return
-	} else {
+	if len(this.Revisions) >= 1 {
 		this.Revisions = this.Revisions[:len(this.Revisions)-1]
 	}
 

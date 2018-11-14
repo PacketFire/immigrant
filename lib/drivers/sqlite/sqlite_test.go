@@ -40,8 +40,9 @@ func TestSqliteDriver_RollBack(t *testing.T) {
 
 	t.Run("rollback", func(t *testing.T) {
 		this.Init("db/immigrant.db")
-		this.Migrate(rs)
+		//		this.Migrate(rs)
 		this.Rollback(rs)
+		t.Log(len(this.Revisions))
 
 		if len(this.Revisions) != 0 {
 			t.Fatal("Rollback results do not meet requirements, expected length of zero.")
