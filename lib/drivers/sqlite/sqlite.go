@@ -42,7 +42,8 @@ type stateTrackerRevision struct {
 }
 
 type SqliteDriver struct {
-	Db *sql.DB
+	Db        *sql.DB
+	Revisions []core.Revision
 }
 
 func (this *SqliteDriver) Init(filepath string) error {
@@ -56,6 +57,7 @@ func (this *SqliteDriver) Init(filepath string) error {
 }
 
 func (this *SqliteDriver) Migrate(r core.Revision) {
+	this.Revisions = append(this.Revisions, r)
 	tx, err := this.Db.Begin()
 	if err != nil {
 		return
@@ -71,7 +73,11 @@ func (this *SqliteDriver) Migrate(r core.Revision) {
 	err = tx.Commit()
 }
 
-func (this *SqliteDriver) Rollback(r core.Revision, c chan error) {
+func (this *SqliteDriver) Rollback(r core.Revision) {
+	if len(this.Revisions) >= 1 {
+		this.Revisions = this.Revisions[:len(this.Revisions)-1]
+	}
+
 	tx, err := this.Db.Begin()
 	if err != nil {
 		return
