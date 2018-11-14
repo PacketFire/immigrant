@@ -18,7 +18,7 @@ func TestSqliteDriver_Migrate(t *testing.T) {
 	}
 
 	t.Run("migrate", func(t *testing.T) {
-		this.Init()
+		this.Init("db/immigrant.db")
 		this.Migrate(rs)
 
 		if len(this.Revisions) == 1 {
@@ -39,7 +39,8 @@ func TestSqliteDriver_RollBack(t *testing.T) {
 	}
 
 	t.Run("rollback", func(t *testing.T) {
-		this.Init()
+		this.Init("db/immigrant.db")
+		this.Migrate(rs)
 		this.Rollback(rs)
 
 		if len(this.Revisions) != 0 {
@@ -52,7 +53,7 @@ func TestSqliteDriver_State(t *testing.T) {
 	rHead := new(core.Revision)
 
 	t.Run("state", func(t *testing.T) {
-		this.Init()
+		this.Init("db/immigrant.db")
 		check, err := this.State()
 		if err != nil {
 			return

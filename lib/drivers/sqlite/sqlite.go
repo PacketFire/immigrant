@@ -46,8 +46,7 @@ type SqliteDriver struct {
 	Revisions []core.Revision
 }
 
-func (this *SqliteDriver) Init() error {
-	filepath := "db/immigrant.db"
+func (this *SqliteDriver) Init(filepath string) error {
 	db, err := sql.Open("sqlite3", filepath)
 	if err != nil {
 		return err
