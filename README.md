@@ -1,2 +1,2 @@
 # immigrant
-![immigrant master build status](https://builds.aranha.solutions/api/badges/ncatelli/immigrant/status.svg)
+![immigrant master build status](https://travis-ci.org/PacketFire/immigrant.svg?branch=master)
