@@ -1,20 +1,19 @@
 IMGNAME="packetfire/immigrant"
+APP_NAME="immigrant"
+PKG="github.com/PacketFire/${APP_NAME}"
 
-build: | depend fmt test
+build: | fmt test
 	go build
 
-depend:
-	glide update ; glide install
+build-docker: | fmt test
+	docker build -t ${IMGNAME}:latest .
 
-build-docker: | depend fmt test
-	docker build -t ${IMGNAME}:`cat "version.txt"` .
+test:
+	go test -race -cover ./...
 
-test: | depend
-	go test ./...
-
-fmt: | depend
+fmt:
 	go fmt ./...
 
 clean:
-	rm -f immigrant; \
-	docker rmi -f ${IMGNAME}:`cat "version.txt"`
+	rm -f ${APP_NAME}; \
+	docker rmi -f ${IMGNAME}:latest
