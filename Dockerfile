@@ -1,22 +1,20 @@
-ARG BASEIMG="alpine:3.7"
-ARG BUILDIMG="golang:1.10.1-alpine3.7"
+ARG BASEIMG="alpine:3.10"
+ARG BUILDIMG="golang:1.13.4-alpine3.10"
 FROM $BUILDIMG as builder
 
-ENV GOPATH=/go
-ENV GIT_USER=PacketFire
-ENV SCM_PROVIDER=github.com
+ENV GOPATH=""
 ENV APP_NAME=immigrant
 
-COPY . /go/src/${SCM_PROVIDER}/${GIT_USER}/${APP_NAME}/
+COPY . /go/
 
-RUN cd ${GOPATH} && go build -o /${APP_NAME} ${SCM_PROVIDER}/${GIT_USER}/${APP_NAME}
+RUN cd /go && go build -o /${APP_NAME}
 
 FROM $BASEIMG
 LABEL maintainer="Nate Catelli <ncatelli@packetfire.org>"
 LABEL description="Container for immigrant"
 
 ENV SERVICE_USER "immigrant"
-ENV APP_NAME=immigrant
+ENV APP_NAME="immigrant"
 
 RUN addgroup ${SERVICE_USER} && \
     adduser -D -G ${SERVICE_USER} ${SERVICE_USER}
