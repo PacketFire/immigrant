@@ -4,6 +4,7 @@
 ## Setup
 
 To setup locally, simply clone the repository and run ``make``.
+For docker execute ``docker run --rm packetfire/immigrant --command``.
 
 ### Questions, Issues and Contributions
 
