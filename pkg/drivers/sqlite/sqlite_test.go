@@ -8,9 +8,9 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-var this SqliteDriver
+var this Driver
 
-func TestSqliteDriver_Migrate(t *testing.T) {
+func TestDriver_Migrate(t *testing.T) {
 	rs := core.Revision{
 		Revision: "1-create-test-table",
 		Migrate:  []string{"create table test ( `id` int(11) not null, primary key (`id`));"},
@@ -31,7 +31,7 @@ func TestSqliteDriver_Migrate(t *testing.T) {
 	})
 }
 
-func TestSqliteDriver_RollBack(t *testing.T) {
+func TestDriver_RollBack(t *testing.T) {
 	rs := core.Revision{
 		Revision: "1-create-test-table",
 		Migrate:  []string{"create table test ( `id` int(11) not null, primary key (`id`));"},
@@ -50,7 +50,7 @@ func TestSqliteDriver_RollBack(t *testing.T) {
 	})
 }
 
-func TestSqliteDriver_State(t *testing.T) {
+func TestDriver_State(t *testing.T) {
 	rHead := new(core.Revision)
 
 	t.Run("state", func(t *testing.T) {

@@ -6,31 +6,31 @@ import (
 	"github.com/PacketFire/immigrant/pkg/core"
 )
 
-type MockDriver struct {
+type Driver struct {
 	Revisions []core.Revision
 }
 
-func (this *MockDriver) Init(config map[string]string) error {
+func (dri *Driver) Init(config map[string]string) error {
 	return nil
 }
 
-func (this *MockDriver) Migrate(r core.Revision) error {
-	this.Revisions = append(this.Revisions, r)
+func (dri *Driver) Migrate(r core.Revision) error {
+	dri.Revisions = append(dri.Revisions, r)
 	return nil
 }
 
-func (this *MockDriver) Rollback(r core.Revision) error {
-	if len(this.Revisions) == 0 {
+func (dri *Driver) Rollback(r core.Revision) error {
+	if len(dri.Revisions) == 0 {
 		return errors.New("No revisions applied.")
 	} else {
-		this.Revisions = this.Revisions[:len(this.Revisions)-1]
+		dri.Revisions = dri.Revisions[:len(dri.Revisions)-1]
 	}
 
 	return nil
 }
 
-func (this *MockDriver) State() *core.Revision {
-	return &this.Revisions[len(this.Revisions)-1]
+func (dri *Driver) State() *core.Revision {
+	return &dri.Revisions[len(dri.Revisions)-1]
 }
 
 func Close() {

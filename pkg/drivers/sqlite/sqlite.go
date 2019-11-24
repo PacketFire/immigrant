@@ -23,13 +23,13 @@ const (
 // remote state's HEAD.
 type errCurrentRemoteState struct{}
 
-func (this errCurrentRemoteState) Error() string {
+func (e errCurrentRemoteState) Error() string {
 	return "Unable to fetch remote revision state."
 }
 
 type errHeadDoesNotExist struct{}
 
-func (this errHeadDoesNotExist) Error() string {
+func (e errHeadDoesNotExist) Error() string {
 	return "Remote revision HEAD does not exist."
 }
 
@@ -41,24 +41,24 @@ type stateTrackerRevision struct {
 	RevisionJSON string
 }
 
-type SqliteDriver struct {
+type Driver struct {
 	Db        *sql.DB
 	Revisions []core.Revision
 }
 
-func (this *SqliteDriver) Init(filepath string) error {
+func (dri *Driver) Init(filepath string) error {
 	db, err := sql.Open("sqlite3", filepath)
 	if err != nil {
 		return err
 	}
 
-	this.Db = db
+	dri.Db = db
 	return nil
 }
 
-func (this *SqliteDriver) Migrate(r core.Revision) {
-	this.Revisions = append(this.Revisions, r)
-	tx, err := this.Db.Begin()
+func (dri *Driver) Migrate(r core.Revision) {
+	dri.Revisions = append(dri.Revisions, r)
+	tx, err := dri.Db.Begin()
 	if err != nil {
 		return
 	}
@@ -73,12 +73,12 @@ func (this *SqliteDriver) Migrate(r core.Revision) {
 	err = tx.Commit()
 }
 
-func (this *SqliteDriver) Rollback(r core.Revision) {
-	if len(this.Revisions) >= 1 {
-		this.Revisions = this.Revisions[:len(this.Revisions)-1]
+func (dri *Driver) Rollback(r core.Revision) {
+	if len(dri.Revisions) >= 1 {
+		dri.Revisions = dri.Revisions[:len(dri.Revisions)-1]
 	}
 
-	tx, err := this.Db.Begin()
+	tx, err := dri.Db.Begin()
 	if err != nil {
 		return
 	}
@@ -93,10 +93,10 @@ func (this *SqliteDriver) Rollback(r core.Revision) {
 	err = tx.Commit()
 }
 
-func (this *SqliteDriver) State() (*core.Revision, error) {
+func (dri *Driver) State() (*core.Revision, error) {
 	rHead := new(core.Revision)
 
-	rows, err := this.Db.Query("SELECT * FROM imm_sequence_tracker ORDER BY id DESC LIMIT 0, 1")
+	rows, err := dri.Db.Query("SELECT * FROM imm_sequence_tracker ORDER BY id DESC LIMIT 0, 1")
 	if err != nil {
 		return nil, err
 	}
@@ -118,8 +118,8 @@ func (this *SqliteDriver) State() (*core.Revision, error) {
 	return nil, errHeadDoesNotExist{}
 }
 
-func (this *SqliteDriver) initStateManager() error {
-	stmt, err := this.Db.Prepare(stateCreate)
+func (dri *Driver) initStateManager() error {
+	stmt, err := dri.Db.Prepare(stateCreate)
 	if err != nil {
 		return err
 	}
@@ -132,6 +132,6 @@ func (this *SqliteDriver) initStateManager() error {
 	return nil
 }
 
-func (this *SqliteDriver) Close() {
-	this.Db.Close()
+func (dri *Driver) Close() {
+	dri.Db.Close()
 }
