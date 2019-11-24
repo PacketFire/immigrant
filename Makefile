@@ -14,6 +14,10 @@ test:
 fmt:
 	go fmt ./...
 
-clean:
-	rm -f ${APP_NAME}; \
-	docker rmi -f ${IMGNAME}:latest
+clean-docker:
+	@type docker >/dev/null 2>&1 && \
+	docker rmi -f ${IMGNAME}:latest || \
+	true
+
+clean: clean-docker
+	@rm -f ${APP_NAME} || true
