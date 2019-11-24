@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/PacketFire/immigrant/lib/core"
+	"github.com/PacketFire/immigrant/pkg/core"
 )
 
 var ec chan error

@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	_ "github.com/go-sql-driver/mysql"
 
-	"github.com/PacketFire/immigrant/lib/core"
-	"github.com/PacketFire/immigrant/lib/drivers"
+	"github.com/PacketFire/immigrant/pkg/core"
+	"github.com/PacketFire/immigrant/pkg/drivers"
 )
 
 const (

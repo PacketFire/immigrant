@@ -3,7 +3,7 @@ package mock
 import (
 	"errors"
 
-	"github.com/PacketFire/immigrant/lib/core"
+	"github.com/PacketFire/immigrant/pkg/core"
 )
 
 type MockDriver struct {
