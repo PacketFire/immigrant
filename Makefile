@@ -2,7 +2,7 @@ IMGNAME="packetfire/immigrant"
 APP_NAME="immigrant"
 PKG="github.com/PacketFire/${APP_NAME}"
 
-build: | fmt test
+build: | fmt lint test
 	go build
 
 build-docker: | fmt test
@@ -21,3 +21,6 @@ clean-docker:
 
 clean: clean-docker
 	@rm -f ${APP_NAME} || true
+
+lint:
+	golint ./...
