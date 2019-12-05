@@ -4,6 +4,8 @@ import (
 	"sync"
 )
 
+// Revisions maintains a mapping of Revisions to their corresponding ID to
+// later be consumed when building and iterating through the Sequence.
 type Revisions struct {
 	revisions map[string]Revision
 	sync.RWMutex
