@@ -148,7 +148,7 @@ func (dri *Driver) initStateManager() error {
 
 // Close implements the Close method defined on the
 // github.com/PacketFire/pkg/core.Driver interface. This method tears down the
-// connection to the database. 
+// connection to the database.
 func (dri *Driver) Close() {
 	dri.Db.Close()
 }
