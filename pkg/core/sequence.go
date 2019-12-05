@@ -10,11 +10,14 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+// Sequence contains a list of strings representing, and mapping directly to,
+// Revision IDs. This sequence is uses to determine an order for which
+// revisions are applied or rolled back from.
 type Sequence struct {
 	Revisions []string `yaml:"revisions"`
 }
 
-// Parse sequence will take a path to the config directory and attempt to open
+// ParseSequence will take a path to the config directory and attempt to open
 // and parse the file to a sequence. On success a *Sequence and nil are
 // returned. On failure a *Sequence and error are returned.
 func ParseSequence(path string) (*Sequence, error) {
@@ -28,12 +31,12 @@ func ParseSequence(path string) (*Sequence, error) {
 
 	raw, err := ioutil.ReadFile(rp)
 	if err != nil {
-		return seq, errors.New(fmt.Sprintf("Unabled to open sequence: %s", rp))
+		return seq, fmt.Errorf("unabled to open sequence: %s", rp)
 	}
 
 	seq, err = unmarshalYamlSequence(raw)
 	if err != nil {
-		return seq, errors.New("Unable to unmarshal sequence.")
+		return seq, errors.New("unable to unmarshal sequence")
 	}
 
 	return seq, nil
@@ -54,7 +57,7 @@ func revisionFileName(path string) (string, error) {
 		return yamlp, nil
 	}
 
-	return rp, errors.New("Sequence does not exist in config directory.")
+	return rp, errors.New("sequence does not exist in config directory")
 }
 
 // unmarshalYamlSequence takes the raw yaml []byte and unmarshals it to a
