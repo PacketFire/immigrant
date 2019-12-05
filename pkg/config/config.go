@@ -22,12 +22,12 @@ func ParseConfig(path string) (map[string]string, error) {
 
 	raw, err := ioutil.ReadFile(cp)
 	if err != nil {
-		return c, errors.New(fmt.Sprintf("Unabled to open config file: %s", cp))
+		return c, fmt.Errorf("unabled to open config file: %s", cp)
 	}
 
 	c, err = unmarshalYamlConfig(raw)
 	if err != nil {
-		return c, errors.New("Unable to unmarshal config.")
+		return c, errors.New("unable to unmarshal config")
 	}
 
 	return c, nil
@@ -48,7 +48,7 @@ func configFileName(path string) (string, error) {
 		return yamlp, nil
 	}
 
-	return cp, errors.New("Config file does not exist in config directory.")
+	return cp, errors.New("config file does not exist in config directory")
 }
 
 // unmarshalYamlConfig takes the raw yaml []byte and unmarshals it to a
