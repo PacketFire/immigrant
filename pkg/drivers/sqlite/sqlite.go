@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 
 	"github.com/PacketFire/immigrant/pkg/core"
-	_ "github.com/mattn/go-sqlite3"
 )
 
 const (
@@ -36,16 +35,22 @@ func (e errHeadDoesNotExist) Error() string {
 // Type Defs
 
 type stateTrackerRevision struct {
-	Id           int
+	ID           int
 	RevisionID   string
 	RevisionJSON string
 }
 
+// Driver implements github.com/PacketFire/immigrant/pkg/core.Driver, providing
+// CRUD methods for operating on a contained sqlite database.
 type Driver struct {
 	Db        *sql.DB
 	Revisions []core.Revision
 }
 
+// Init implements the Init method defined on the
+// github.com/PacketFire/pkg/core.Driver interface. This method takes a map of
+// configuration data and attempts to open a new sql connection to the
+// database. If it is unable to do so, an error is returned.
 func (dri *Driver) Init(filepath string) error {
 	db, err := sql.Open("sqlite3", filepath)
 	if err != nil {
@@ -56,6 +61,9 @@ func (dri *Driver) Init(filepath string) error {
 	return nil
 }
 
+// Migrate implements the Migrate method defined on the
+// github.com/PacketFire/pkg/core.Driver interface. This method attempts to
+// execute all migrations within a passed Revision against a database.
 func (dri *Driver) Migrate(r core.Revision) {
 	dri.Revisions = append(dri.Revisions, r)
 	tx, err := dri.Db.Begin()
@@ -73,6 +81,9 @@ func (dri *Driver) Migrate(r core.Revision) {
 	err = tx.Commit()
 }
 
+// Rollback implements the Rollback method defined on the
+// github.com/PacketFire/pkg/core.Driver interface. This method attempts to
+// execute all rollbacks within a passed Revision against a database.
 func (dri *Driver) Rollback(r core.Revision) {
 	if len(dri.Revisions) >= 1 {
 		dri.Revisions = dri.Revisions[:len(dri.Revisions)-1]
@@ -93,6 +104,9 @@ func (dri *Driver) Rollback(r core.Revision) {
 	err = tx.Commit()
 }
 
+// State implements the State method defined on the
+// github.com/PacketFire/pkg/core.Driver interface. This method attempts to
+// return the last Revision added to the databases state.
 func (dri *Driver) State() (*core.Revision, error) {
 	rHead := new(core.Revision)
 
@@ -132,6 +146,9 @@ func (dri *Driver) initStateManager() error {
 	return nil
 }
 
+// Close implements the Close method defined on the
+// github.com/PacketFire/pkg/core.Driver interface. This method tears down the
+// connection to the database. 
 func (dri *Driver) Close() {
 	dri.Db.Close()
 }
