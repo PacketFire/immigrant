@@ -3,7 +3,6 @@ package mysql
 import (
 	"database/sql"
 	"encoding/json"
-	_ "github.com/go-sql-driver/mysql"
 
 	"github.com/PacketFire/immigrant/pkg/core"
 	"github.com/PacketFire/immigrant/pkg/drivers"
@@ -24,27 +23,27 @@ const (
 // remote state's HEAD.
 type errCurrentRemoteState struct{}
 
-func (this errCurrentRemoteState) Error() string {
+func (e errCurrentRemoteState) Error() string {
 	return "Unable to fetch remote revision state."
 }
 
 type errHeadDoesNotExist struct{}
 
-func (this errHeadDoesNotExist) Error() string {
+func (e errHeadDoesNotExist) Error() string {
 	return "Remote revision HEAD does not exist."
 }
 
 // Type Defs
 
 type stateTrackerRevision struct {
-	Id           int
+	ID           int
 	RevisionID   string
 	RevisionJSON string
 }
 
-// MysqlDriver stores configuration information along with the DB connection
+// Driver stores configuration information along with the DB connection
 // management struct.
-type MysqlDriver struct {
+type Driver struct {
 	Config drivers.DSN
 	Db     *sql.DB
 }
@@ -52,25 +51,25 @@ type MysqlDriver struct {
 // Init takes a context with all configuration which it then uses to create the
 // DB connection and bootstrap immigrant's state tracker table. on success nil
 // is returned. On failure, the corresponding errors are returned.
-func (this *MysqlDriver) Init(ctx map[string]string) error {
-	this.Config = drivers.NewDSN(ctx["username"],
+func (dri *Driver) Init(ctx map[string]string) error {
+	dri.Config = drivers.NewDSN(ctx["username"],
 		ctx["password"],
 		ctx["proto"],
 		ctx["host"],
 		ctx["database"],
 		ctx["params"])
 
-	db, err := sql.Open("mysql", this.Config.String())
+	db, err := sql.Open("mysql", dri.Config.String())
 	if err != nil {
 		return err
 	}
 
-	this.Db = db
+	dri.Db = db
 	if err = db.Ping(); err != nil {
 		return err
 	}
 
-	if err = this.initStateManager(); err != nil {
+	if err = dri.initStateManager(); err != nil {
 		return err
 	}
 
@@ -82,8 +81,8 @@ func (this *MysqlDriver) Init(ctx map[string]string) error {
 // communicate back to the cli tool whether a migration has completed in case
 // the signal handler is invoked. On success, nil is pushed over the channel.
 // On failure, an error is pushed over the channel.
-func (this *MysqlDriver) Migrate(r core.Revision, c chan error) {
-	tx, err := this.Db.Begin()
+func (dri *Driver) Migrate(r core.Revision, c chan error) {
+	tx, err := dri.Db.Begin()
 	if err != nil {
 		c <- err
 		return
@@ -106,8 +105,8 @@ func (this *MysqlDriver) Migrate(r core.Revision, c chan error) {
 // communicate back to the cli tool whether a migration has completed in case
 // the signal handler is invoked. On success, nil is pushed over the channel.
 // On failure, an error is pushed over the channel.
-func (this *MysqlDriver) Rollback(r core.Revision, c chan error) {
-	tx, err := this.Db.Begin()
+func (dri *Driver) Rollback(r core.Revision, c chan error) {
+	tx, err := dri.Db.Begin()
 	if err != nil {
 		c <- err
 		return
@@ -128,10 +127,10 @@ func (this *MysqlDriver) Rollback(r core.Revision, c chan error) {
 // State returns the current revision that the database is at. On success a
 // pointer to a populated Revision is return and nil is returned. On failure,
 // nil and an error are returned.
-func (this *MysqlDriver) State() (*core.Revision, error) {
+func (dri *Driver) State() (*core.Revision, error) {
 	rHead := new(core.Revision)
 
-	rows, err := this.Db.Query("SELECT * FROM imm_sequence_tracker ORDER BY id DESC LIMIT 0, 1")
+	rows, err := dri.Db.Query("SELECT * FROM imm_sequence_tracker ORDER BY id DESC LIMIT 0, 1")
 	if err != nil {
 		return nil, err
 	}
@@ -156,8 +155,8 @@ func (this *MysqlDriver) State() (*core.Revision, error) {
 // initStateManager attempts to create the state tracker table and is only meant
 // to be called by the Init method. On success, nil is returned. On failure an
 // error is returned.
-func (this *MysqlDriver) initStateManager() error {
-	stmt, err := this.Db.Prepare(stateCreate)
+func (dri *Driver) initStateManager() error {
+	stmt, err := dri.Db.Prepare(stateCreate)
 	if err != nil {
 		return err
 	}
@@ -170,7 +169,7 @@ func (this *MysqlDriver) initStateManager() error {
 	return nil
 }
 
-// Closes the DB object associated with the driver.
-func (this *MysqlDriver) Close() {
-	this.Db.Close()
+// Close closes the DB object associated with the driver.
+func (dri *Driver) Close() {
+	dri.Db.Close()
 }

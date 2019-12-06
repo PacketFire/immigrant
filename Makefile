@@ -12,7 +12,7 @@ test:
 	go test -race -cover ./...
 
 fmt:
-	go fmt ./...
+	test -z $(shell go fmt ./...)
 
 clean-docker:
 	@type docker >/dev/null 2>&1 && \
@@ -23,4 +23,4 @@ clean: clean-docker
 	@rm -f ${APP_NAME} || true
 
 lint:
-	golint ./...
+	golint -set_exit_status ./...

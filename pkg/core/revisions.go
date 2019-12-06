@@ -4,6 +4,8 @@ import (
 	"sync"
 )
 
+// Revisions maintains a mapping of Revisions to their corresponding ID to
+// later be consumed when building and iterating through the Sequence.
 type Revisions struct {
 	revisions map[string]Revision
 	sync.RWMutex
@@ -13,18 +15,18 @@ type Revisions struct {
 // corresponding Revision. A second field, is also returned representing
 // whether the key existed or not. On success a Revision and true is returned.
 // On failure, Revision and false is returned.
-func (this *Revisions) Revision(id string) (Revision, bool) {
-	this.RLock()
-	defer this.RUnlock()
+func (rev *Revisions) Revision(id string) (Revision, bool) {
+	rev.RLock()
+	defer rev.RUnlock()
 
-	r, prs := this.revisions[id]
+	r, prs := rev.revisions[id]
 	return r, prs
 }
 
 // Length Returns the count of k/v pairs in the revisions map.
-func (this *Revisions) Length() int {
-	this.RLock()
-	defer this.RUnlock()
+func (rev *Revisions) Length() int {
+	rev.RLock()
+	defer rev.RUnlock()
 
-	return len(this.revisions)
+	return len(rev.revisions)
 }

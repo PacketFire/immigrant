@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	RevisionBuffSize int = 10 //just an arbitrary number
+	revisionBuffSize int = 10 // just an arbitrary number
 )
 
 // Walk takes a path and will traverse the entire directory, dispatching the
@@ -35,7 +35,7 @@ func Walk(path string) (*Revisions, error) {
 		for rev := range cpc {
 			id := rev.Revision
 			if _, prs := rm[id]; prs == true {
-				panic(fmt.Sprintf("Duplicate revision ID: %s", id))
+				panic(fmt.Sprintf("duplicate revision ID: %s", id))
 			}
 
 			rm[id] = rev
@@ -45,7 +45,7 @@ func Walk(path string) (*Revisions, error) {
 	}(mc, pc)
 
 	if err := filepath.Walk(rpath, parseRevisions(pc)); err != nil {
-		return &Revisions{}, errors.New("Directory traversal failed")
+		return &Revisions{}, errors.New("directory traversal failed")
 	}
 
 	close(pc)
@@ -81,7 +81,7 @@ func parseRevisions(c chan Revision) func(string, os.FileInfo, error) error {
 
 			rb, err = unmarshalYamlRevisions(yml)
 			if err != nil {
-				return errors.New(fmt.Sprintf("Unable to unmarshal %s", path))
+				return fmt.Errorf("unable to unmarshal %s", path)
 			}
 		}
 
@@ -95,9 +95,9 @@ func parseRevisions(c chan Revision) func(string, os.FileInfo, error) error {
 }
 
 func unmarshalYamlRevisions(yml []byte) ([]Revision, error) {
-	rb := make([]Revision, 0, RevisionBuffSize)
+	rb := make([]Revision, 0, revisionBuffSize)
 	if err := yaml.Unmarshal(yml, &rb); err != nil {
-		return rb, errors.New("Unable to unmarshal file")
+		return rb, errors.New("unable to unmarshal file")
 	}
 
 	return rb, nil

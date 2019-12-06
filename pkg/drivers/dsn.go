@@ -31,17 +31,17 @@ func NewDSN(user, pass, proto, host, database, params string) DSN {
 }
 
 // Converts the DSN struct to a DSN string.
-func (this DSN) String() string {
-	dsn := fmt.Sprintf("%s:%s@%s(%s)/%s)",
-		this.user,
-		this.pass,
-		this.proto,
-		this.host,
-		this.database)
+func (dsn DSN) String() string {
+	connString := fmt.Sprintf("%s:%s@%s(%s)/%s)",
+		dsn.user,
+		dsn.pass,
+		dsn.proto,
+		dsn.host,
+		dsn.database)
 
-	if this.params != "" {
-		dsn = fmt.Sprintf("%s?%s", dsn, this.params)
+	if dsn.params != "" {
+		connString = fmt.Sprintf("%s?%s", connString, dsn.params)
 	}
 
-	return dsn
+	return connString
 }

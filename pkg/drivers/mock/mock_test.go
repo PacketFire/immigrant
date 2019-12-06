@@ -9,9 +9,9 @@ import (
 
 var ec chan error
 var name string
-var this MockDriver
+var this Driver
 
-func TestMockDriver_Migrate(t *testing.T) {
+func TestDriver_Migrate(t *testing.T) {
 	name = "migrate"
 	rs := core.Revision{
 		Revision: "1-create-test-table",
@@ -30,7 +30,7 @@ func TestMockDriver_Migrate(t *testing.T) {
 	})
 }
 
-func TestMockDriver_Rollback(t *testing.T) {
+func TestDriver_Rollback(t *testing.T) {
 	name = "rollback"
 	rs := core.Revision{
 		Revision: "1-create-test-table",
@@ -47,7 +47,7 @@ func TestMockDriver_Rollback(t *testing.T) {
 	})
 }
 
-func TestMockDriver_State(t *testing.T) {
+func TestDriver_State(t *testing.T) {
 	name = "state"
 	rs := core.Revision{
 		Revision: "1-create-test-table",

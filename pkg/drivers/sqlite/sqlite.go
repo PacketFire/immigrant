@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 
 	"github.com/PacketFire/immigrant/pkg/core"
-	_ "github.com/mattn/go-sqlite3"
 )
 
 const (
@@ -23,42 +22,51 @@ const (
 // remote state's HEAD.
 type errCurrentRemoteState struct{}
 
-func (this errCurrentRemoteState) Error() string {
+func (e errCurrentRemoteState) Error() string {
 	return "Unable to fetch remote revision state."
 }
 
 type errHeadDoesNotExist struct{}
 
-func (this errHeadDoesNotExist) Error() string {
+func (e errHeadDoesNotExist) Error() string {
 	return "Remote revision HEAD does not exist."
 }
 
 // Type Defs
 
 type stateTrackerRevision struct {
-	Id           int
+	ID           int
 	RevisionID   string
 	RevisionJSON string
 }
 
-type SqliteDriver struct {
+// Driver implements github.com/PacketFire/immigrant/pkg/core.Driver, providing
+// CRUD methods for operating on a contained sqlite database.
+type Driver struct {
 	Db        *sql.DB
 	Revisions []core.Revision
 }
 
-func (this *SqliteDriver) Init(filepath string) error {
+// Init implements the Init method defined on the
+// github.com/PacketFire/pkg/core.Driver interface. This method takes a map of
+// configuration data and attempts to open a new sql connection to the
+// database. If it is unable to do so, an error is returned.
+func (dri *Driver) Init(filepath string) error {
 	db, err := sql.Open("sqlite3", filepath)
 	if err != nil {
 		return err
 	}
 
-	this.Db = db
+	dri.Db = db
 	return nil
 }
 
-func (this *SqliteDriver) Migrate(r core.Revision) {
-	this.Revisions = append(this.Revisions, r)
-	tx, err := this.Db.Begin()
+// Migrate implements the Migrate method defined on the
+// github.com/PacketFire/pkg/core.Driver interface. This method attempts to
+// execute all migrations within a passed Revision against a database.
+func (dri *Driver) Migrate(r core.Revision) {
+	dri.Revisions = append(dri.Revisions, r)
+	tx, err := dri.Db.Begin()
 	if err != nil {
 		return
 	}
@@ -73,12 +81,15 @@ func (this *SqliteDriver) Migrate(r core.Revision) {
 	err = tx.Commit()
 }
 
-func (this *SqliteDriver) Rollback(r core.Revision) {
-	if len(this.Revisions) >= 1 {
-		this.Revisions = this.Revisions[:len(this.Revisions)-1]
+// Rollback implements the Rollback method defined on the
+// github.com/PacketFire/pkg/core.Driver interface. This method attempts to
+// execute all rollbacks within a passed Revision against a database.
+func (dri *Driver) Rollback(r core.Revision) {
+	if len(dri.Revisions) >= 1 {
+		dri.Revisions = dri.Revisions[:len(dri.Revisions)-1]
 	}
 
-	tx, err := this.Db.Begin()
+	tx, err := dri.Db.Begin()
 	if err != nil {
 		return
 	}
@@ -93,10 +104,13 @@ func (this *SqliteDriver) Rollback(r core.Revision) {
 	err = tx.Commit()
 }
 
-func (this *SqliteDriver) State() (*core.Revision, error) {
+// State implements the State method defined on the
+// github.com/PacketFire/pkg/core.Driver interface. This method attempts to
+// return the last Revision added to the databases state.
+func (dri *Driver) State() (*core.Revision, error) {
 	rHead := new(core.Revision)
 
-	rows, err := this.Db.Query("SELECT * FROM imm_sequence_tracker ORDER BY id DESC LIMIT 0, 1")
+	rows, err := dri.Db.Query("SELECT * FROM imm_sequence_tracker ORDER BY id DESC LIMIT 0, 1")
 	if err != nil {
 		return nil, err
 	}
@@ -118,8 +132,8 @@ func (this *SqliteDriver) State() (*core.Revision, error) {
 	return nil, errHeadDoesNotExist{}
 }
 
-func (this *SqliteDriver) initStateManager() error {
-	stmt, err := this.Db.Prepare(stateCreate)
+func (dri *Driver) initStateManager() error {
+	stmt, err := dri.Db.Prepare(stateCreate)
 	if err != nil {
 		return err
 	}
@@ -132,6 +146,9 @@ func (this *SqliteDriver) initStateManager() error {
 	return nil
 }
 
-func (this *SqliteDriver) Close() {
-	this.Db.Close()
+// Close implements the Close method defined on the
+// github.com/PacketFire/pkg/core.Driver interface. This method tears down the
+// connection to the database.
+func (dri *Driver) Close() {
+	dri.Db.Close()
 }
