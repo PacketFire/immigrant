@@ -47,25 +47,28 @@ func TestDriver_Rollback(t *testing.T) {
 	})
 }
 
-func TestDriver_State(t *testing.T) {
-	name = "state"
-	rs := core.Revision{
+func DriverStateMethodShould(t *testing.T) {
+	r := &core.Revision{
 		Revision: "1-create-test-table",
 		Migrate:  []string{"create table test ( `id` int(11) not null, primary key (`id`));"},
 		Rollback: []string{"drop table test"},
 	}
 
-	rs2 := core.Revision{
-		Revision: "2-create-test2-table",
-		Migrate:  []string{"create table test2 ( `id` int(11) not null, primary key (`id`));"},
-		Rollback: []string{"drop table test2"},
-	}
-
-	t.Run(name, func(t *testing.T) {
-		this.Migrate(rs)
-		this.Migrate(rs2)
-		if !reflect.DeepEqual(*this.State(), this.Revisions[len(this.Revisions)-1]) {
-			t.Log("failed")
+	t.Run("return latest revision when revision state exists", func(t *testing.T) {
+		var dri Driver
+		dri.Revisions = []*core.Revision{r,}
+		sr := dri.State()
+		if !reflect.DeepEqual(*r, *sr) {
+			t.Errorf("expected %v got %v", *r, *sr)
 		}
+	})
+
+	t.Run("return nil when revision state doesn't exist", func(t *testing.T) {
+		var dri Driver
+		dri.Revisions = []*core.Revision{}
+		sr := dri.State()
+		if !reflect.DeepEqual(*r, *sr) {
+			t.Errorf("expected %v got %v", *r, *sr)
+		}		
 	})
 }
