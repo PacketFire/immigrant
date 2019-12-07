@@ -8,10 +8,6 @@ import (
 	"github.com/PacketFire/immigrant/pkg/core"
 )
 
-var ec chan error
-var name string
-var this Driver
-
 func TestDriverMigrateMethodShould(t *testing.T) {
 	r := core.Revision{
 		Revision: "1-create-test-table",
