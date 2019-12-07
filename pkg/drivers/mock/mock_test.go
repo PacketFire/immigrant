@@ -47,7 +47,7 @@ func TestDriver_Rollback(t *testing.T) {
 	})
 }
 
-func DriverStateMethodShould(t *testing.T) {
+func TestDriverStateMethodShould(t *testing.T) {
 	r := &core.Revision{
 		Revision: "1-create-test-table",
 		Migrate:  []string{"create table test ( `id` int(11) not null, primary key (`id`));"},
@@ -67,8 +67,8 @@ func DriverStateMethodShould(t *testing.T) {
 		var dri Driver
 		dri.Revisions = []*core.Revision{}
 		sr := dri.State()
-		if !reflect.DeepEqual(*r, *sr) {
-			t.Errorf("expected %v got %v", *r, *sr)
+		if sr != nil {
+			t.Errorf("expected %v got %v", nil, sr)
 		}		
 	})
 }
