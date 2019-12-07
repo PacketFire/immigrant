@@ -12,21 +12,20 @@ var ec chan error
 var name string
 var this Driver
 
-func TestDriver_Migrate(t *testing.T) {
-	name = "migrate"
-	rs := core.Revision{
+func TestDriverMigrateMethodShould(t *testing.T) {
+	r := core.Revision{
 		Revision: "1-create-test-table",
 		Migrate:  []string{"create table test ( `id` int(11) not null, primary key (`id`));"},
 		Rollback: []string{"drop table test"},
 	}
 
-	t.Run(name, func(t *testing.T) {
-		this.Migrate(rs)
+	t.Run("append a revision to the state when invoked", func(t *testing.T) {
+		var dri Driver
+		dri.Revisions = []*core.Revision{}
 
-		if len(this.Revisions) == 1 {
-			if !reflect.DeepEqual(this.Revisions[0], rs) {
-				t.Log("failed")
-			}
+		dri.Migrate(r)
+		if len(dri.Revisions) != 1 || !reflect.DeepEqual(*dri.Revisions[0], r) {
+			t.Errorf("expected %v got %v", r, *dri.Revisions[0])
 		}
 	})
 }
