@@ -8,6 +8,19 @@ import (
 	"github.com/PacketFire/immigrant/pkg/core"
 )
 
+var errFmt string = "expected %v got %v"
+
+func TestDriverInitMethodShould(t *testing.T) {
+	t.Run("return nil", func(t *testing.T) {
+		var dri Driver
+		conf := make(map[string]string)
+
+		if rv := dri.Init(conf); rv != nil {
+			t.Errorf(errFmt, nil, rv)
+		}
+	})
+}
+
 func TestDriverMigrateMethodShould(t *testing.T) {
 	r := core.Revision{
 		Revision: "1-create-test-table",
@@ -21,7 +34,7 @@ func TestDriverMigrateMethodShould(t *testing.T) {
 
 		dri.Migrate(r)
 		if len(dri.Revisions) != 1 || !reflect.DeepEqual(*dri.Revisions[0], r) {
-			t.Errorf("expected %v got %v", r, *dri.Revisions[0])
+			t.Errorf(errFmt, r, *dri.Revisions[0])
 		}
 	})
 }
@@ -38,12 +51,12 @@ func TestDriverRollbackMethodShould(t *testing.T) {
 		dri.Revisions = []*core.Revision{&r}
 
 		if err := dri.Rollback(r); err != nil {
-			t.Errorf("expected %v got %v", nil, err)
+			t.Errorf(errFmt, nil, err)
 		}
 
 		rlen := len(dri.Revisions)
 		if rlen != 0 {
-			t.Errorf("expected %v got %v", 0, rlen)
+			t.Errorf(errFmt, 0, rlen)
 		}
 	})
 
@@ -52,7 +65,7 @@ func TestDriverRollbackMethodShould(t *testing.T) {
 		dri.Revisions = []*core.Revision{}
 
 		if err := dri.Rollback(r); err == nil {
-			t.Errorf("expected %v got %v", errors.New("no revisions applied"), err)
+			t.Errorf(errFmt, errors.New("no revisions applied"), err)
 		}
 	})
 }
@@ -69,7 +82,7 @@ func TestDriverStateMethodShould(t *testing.T) {
 		dri.Revisions = []*core.Revision{r}
 		sr := dri.State()
 		if !reflect.DeepEqual(*r, *sr) {
-			t.Errorf("expected %v got %v", *r, *sr)
+			t.Errorf(errFmt, *r, *sr)
 		}
 	})
 
@@ -78,7 +91,7 @@ func TestDriverStateMethodShould(t *testing.T) {
 		dri.Revisions = []*core.Revision{}
 		sr := dri.State()
 		if sr != nil {
-			t.Errorf("expected %v got %v", nil, sr)
+			t.Errorf(errFmt, nil, sr)
 		}
 	})
 }
