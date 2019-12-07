@@ -95,3 +95,11 @@ func TestDriverStateMethodShould(t *testing.T) {
 		}
 	})
 }
+
+func TestDriverCloseMethodShould(t *testing.T) {
+	t.Run("exist as a method", func(t *testing.T) {
+		var dri Driver
+
+		dri.Close()
+	})
+}

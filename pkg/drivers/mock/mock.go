@@ -56,4 +56,4 @@ func (dri *Driver) State() *core.Revision {
 // Close mocks the requirements for Close on the
 // github.com/PacketFire/immigrant/pkg/core.Driver interface. This method
 // simply functions as a noop.
-func Close() {}
+func (dri *Driver) Close() {}
