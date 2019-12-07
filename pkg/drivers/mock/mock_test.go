@@ -1,6 +1,7 @@
 package mock
 
 import (
+	"errors"
 	"reflect"
 	"testing"
 
@@ -48,6 +49,15 @@ func TestDriverRollbackMethodShould(t *testing.T) {
 		rlen := len(dri.Revisions)
 		if rlen != 0 {
 			t.Errorf("expected %v got %v", 0, rlen)
+		}
+	})
+
+	t.Run("throw an error if a rollback is run against a driver with no state", func(t *testing.T) {
+		var dri Driver
+		dri.Revisions = []*core.Revision{}
+
+		if err := dri.Rollback(r); err == nil {
+			t.Errorf("expected %v got %v", errors.New("no revisions applied"), err)
 		}
 	})
 }
