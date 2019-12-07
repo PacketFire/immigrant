@@ -9,7 +9,7 @@ import (
 // Driver implements github.com/PacketFire/immigrant/pkg/core.Driver, storing
 // revisions to an in memory representation of the Revisions store.
 type Driver struct {
-	Revisions []core.Revision
+	Revisions []*core.Revision
 }
 
 // Init mocks the requirements for Init on the
@@ -23,7 +23,7 @@ func (dri *Driver) Init(config map[string]string) error {
 // github.com/PacketFire/immigrant/pkg/core.Driver interface. This method
 // appends the past Revision to an in memory store and returns a success.
 func (dri *Driver) Migrate(r core.Revision) error {
-	dri.Revisions = append(dri.Revisions, r)
+	dri.Revisions = append(dri.Revisions, &r)
 	return nil
 }
 
@@ -43,12 +43,17 @@ func (dri *Driver) Rollback(r core.Revision) error {
 // State mocks the requirements for State on the
 // github.com/PacketFire/immigrant/pkg/core.Driver interface. This method
 // retrieves the previous revision from the internal representation of the
-// revision map.
+// revision map. If the Revision list is empty, nil is returned.
 func (dri *Driver) State() *core.Revision {
-	return &dri.Revisions[len(dri.Revisions)-1]
+	rtl := len(dri.Revisions)
+	if rtl == 0 {
+		return nil
+	}
+
+	return dri.Revisions[rtl-1]
 }
 
 // Close mocks the requirements for Close on the
 // github.com/PacketFire/immigrant/pkg/core.Driver interface. This method
 // simply functions as a noop.
-func Close() {}
+func (dri *Driver) Close() {}

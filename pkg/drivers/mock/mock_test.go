@@ -1,71 +1,105 @@
 package mock
 
 import (
+	"errors"
 	"reflect"
 	"testing"
 
 	"github.com/PacketFire/immigrant/pkg/core"
 )
 
-var ec chan error
-var name string
-var this Driver
+var errFmt string = "expected %v got %v"
 
-func TestDriver_Migrate(t *testing.T) {
-	name = "migrate"
-	rs := core.Revision{
-		Revision: "1-create-test-table",
-		Migrate:  []string{"create table test ( `id` int(11) not null, primary key (`id`));"},
-		Rollback: []string{"drop table test"},
-	}
+func TestDriverInitMethodShould(t *testing.T) {
+	t.Run("return nil", func(t *testing.T) {
+		var dri Driver
+		conf := make(map[string]string)
 
-	t.Run(name, func(t *testing.T) {
-		this.Migrate(rs)
-
-		if len(this.Revisions) == 1 {
-			if !reflect.DeepEqual(this.Revisions[0], rs) {
-				t.Log("failed")
-			}
+		if rv := dri.Init(conf); rv != nil {
+			t.Errorf(errFmt, nil, rv)
 		}
 	})
 }
 
-func TestDriver_Rollback(t *testing.T) {
-	name = "rollback"
-	rs := core.Revision{
+func TestDriverMigrateMethodShould(t *testing.T) {
+	r := core.Revision{
 		Revision: "1-create-test-table",
 		Migrate:  []string{"create table test ( `id` int(11) not null, primary key (`id`));"},
 		Rollback: []string{"drop table test"},
 	}
 
-	t.Run(name, func(t *testing.T) {
-		this.Rollback(rs)
+	t.Run("append a revision to the state when invoked", func(t *testing.T) {
+		var dri Driver
+		dri.Revisions = []*core.Revision{}
 
-		if len(this.Revisions) != 0 {
-			t.Log("failed")
+		dri.Migrate(r)
+		if len(dri.Revisions) != 1 || !reflect.DeepEqual(*dri.Revisions[0], r) {
+			t.Errorf(errFmt, r, *dri.Revisions[0])
 		}
 	})
 }
 
-func TestDriver_State(t *testing.T) {
-	name = "state"
-	rs := core.Revision{
+func TestDriverRollbackMethodShould(t *testing.T) {
+	r := core.Revision{
 		Revision: "1-create-test-table",
 		Migrate:  []string{"create table test ( `id` int(11) not null, primary key (`id`));"},
 		Rollback: []string{"drop table test"},
 	}
 
-	rs2 := core.Revision{
-		Revision: "2-create-test2-table",
-		Migrate:  []string{"create table test2 ( `id` int(11) not null, primary key (`id`));"},
-		Rollback: []string{"drop table test2"},
+	t.Run("pop the most recent revision off of the in memory state if state exists", func(t *testing.T) {
+		var dri Driver
+		dri.Revisions = []*core.Revision{&r}
+
+		if err := dri.Rollback(r); err != nil {
+			t.Errorf(errFmt, nil, err)
+		}
+
+		rlen := len(dri.Revisions)
+		if rlen != 0 {
+			t.Errorf(errFmt, 0, rlen)
+		}
+	})
+
+	t.Run("throw an error if a rollback is run against a driver with no state", func(t *testing.T) {
+		var dri Driver
+		dri.Revisions = []*core.Revision{}
+
+		if err := dri.Rollback(r); err == nil {
+			t.Errorf(errFmt, errors.New("no revisions applied"), err)
+		}
+	})
+}
+
+func TestDriverStateMethodShould(t *testing.T) {
+	r := &core.Revision{
+		Revision: "1-create-test-table",
+		Migrate:  []string{"create table test ( `id` int(11) not null, primary key (`id`));"},
+		Rollback: []string{"drop table test"},
 	}
 
-	t.Run(name, func(t *testing.T) {
-		this.Migrate(rs)
-		this.Migrate(rs2)
-		if !reflect.DeepEqual(*this.State(), this.Revisions[len(this.Revisions)-1]) {
-			t.Log("failed")
+	t.Run("return latest revision when revision state exists", func(t *testing.T) {
+		var dri Driver
+		dri.Revisions = []*core.Revision{r}
+		sr := dri.State()
+		if !reflect.DeepEqual(*r, *sr) {
+			t.Errorf(errFmt, *r, *sr)
 		}
+	})
+
+	t.Run("return nil when revision state doesn't exist", func(t *testing.T) {
+		var dri Driver
+		dri.Revisions = []*core.Revision{}
+		sr := dri.State()
+		if sr != nil {
+			t.Errorf(errFmt, nil, sr)
+		}
+	})
+}
+
+func TestDriverCloseMethodShould(t *testing.T) {
+	t.Run("exist as a method", func(t *testing.T) {
+		var dri Driver
+
+		dri.Close()
 	})
 }
