@@ -18,7 +18,7 @@ type Cmd struct {
 	version string
 }
 
-// Run executes the version command, printing a version string for immigrant.'
+// Run executes the version command, printing a version string for immigrant.
 // the return value should always be 0 as this command should never fail.
 func (c *Cmd) Run(_ []string) int {
 	c.UI.Output(fmt.Sprintf("immigrant %s", c.version))
