@@ -5,6 +5,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/PacketFire/immigrant/pkg/config"
 	"github.com/PacketFire/immigrant/pkg/core"
 )
 
@@ -13,7 +14,7 @@ var errFmt string = "expected %v got %v"
 func TestDriverInitMethodShould(t *testing.T) {
 	t.Run("return nil", func(t *testing.T) {
 		var dri Driver
-		conf := make(map[string]string)
+		conf := make(config.Config)
 
 		if rv := dri.Init(conf); rv != nil {
 			t.Errorf(errFmt, nil, rv)

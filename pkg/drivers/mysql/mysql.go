@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 
+	"github.com/PacketFire/immigrant/pkg/config"
 	"github.com/PacketFire/immigrant/pkg/core"
 	"github.com/PacketFire/immigrant/pkg/drivers"
 )
@@ -51,13 +52,13 @@ type Driver struct {
 // Init takes a context with all configuration which it then uses to create the
 // DB connection and bootstrap immigrant's state tracker table. on success nil
 // is returned. On failure, the corresponding errors are returned.
-func (dri *Driver) Init(ctx map[string]string) error {
-	dri.Config = drivers.NewDSN(ctx["username"],
-		ctx["password"],
-		ctx["proto"],
-		ctx["host"],
-		ctx["database"],
-		ctx["params"])
+func (dri *Driver) Init(conf config.Config) error {
+	dri.Config = drivers.NewDSN(conf["username"],
+		conf["password"],
+		conf["proto"],
+		conf["host"],
+		conf["database"],
+		conf["params"])
 
 	db, err := sql.Open("mysql", dri.Config.String())
 	if err != nil {

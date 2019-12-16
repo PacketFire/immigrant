@@ -3,6 +3,7 @@ package mock
 import (
 	"errors"
 
+	"github.com/PacketFire/immigrant/pkg/config"
 	"github.com/PacketFire/immigrant/pkg/core"
 )
 
@@ -15,7 +16,7 @@ type Driver struct {
 // Init mocks the requirements for Init on the
 // github.com/PacketFire/immigrant/pkg/core.Driver interface. This method
 // always returns a successful call.
-func (dri *Driver) Init(config map[string]string) error {
+func (dri *Driver) Init(config config.Config) error {
 	return nil
 }
 

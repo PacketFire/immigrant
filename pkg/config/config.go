@@ -9,11 +9,15 @@ import (
 	"path/filepath"
 )
 
+// Config represents a KV mapping of string parameters to be passed to the
+// database.
+type Config map[string]string
+
 // ParseConfig takes a path to the config directory and attempts to parse the
-// config.yml file in that directory. On success a map[string]string is
-// returned. On failure a map[string]string and an error is returned.
-func ParseConfig(path string) (map[string]string, error) {
-	c := make(map[string]string)
+// config.yml file in that directory. On success a Config is
+// returned. On failure a Config and an error is returned.
+func ParseConfig(path string) (Config, error) {
+	c := make(Config)
 
 	cp, err := configFileName(path)
 	if err != nil {
@@ -52,10 +56,10 @@ func configFileName(path string) (string, error) {
 }
 
 // unmarshalYamlConfig takes the raw yaml []byte and unmarshals it to a
-// map[string]string. On success a map[string]string and an error are returned.
-// on failure, a map[string]string and error is returned.
-func unmarshalYamlConfig(yml []byte) (map[string]string, error) {
-	c := make(map[string]string)
+// Config. On success a Config and an error are returned.
+// on failure, a Config and error is returned.
+func unmarshalYamlConfig(yml []byte) (Config, error) {
+	c := make(Config)
 	if err := yaml.Unmarshal(yml, c); err != nil {
 		return c, errors.New("Unable to unmarshal config file")
 	}
