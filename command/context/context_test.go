@@ -1,8 +1,8 @@
 package context
 
 import (
-	"testing"
 	"github.com/PacketFire/immigrant/pkg/config"
+	"testing"
 )
 
 var errFmt string = "expected %v got %v"
