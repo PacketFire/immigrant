@@ -11,7 +11,12 @@ const (
 	cliVersion string = "0.0.1"
 )
 
-func init() {
-	Register("version", func(ui cli.Ui) (cli.Command, error) { return version.New(context.Context{}, ui, cliVersion), nil })
-	Register("converge", func(ui cli.Ui) (cli.Command, error) { return converge.New(context.Context{}, ui), nil })
+// Build takes a ctx as an argument and attempts to construct a cli registry,
+// injecting the context into each method.
+func Build(ctx context.Context) Registry {
+	r := make(Registry)
+	r.Register("version", func(ui cli.Ui) (cli.Command, error) { return version.New(ctx, ui, cliVersion), nil })
+	r.Register("converge", func(ui cli.Ui) (cli.Command, error) { return converge.New(ctx, ui), nil })
+
+	return r
 }
