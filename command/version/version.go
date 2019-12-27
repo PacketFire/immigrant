@@ -2,21 +2,21 @@ package version
 
 import (
 	"fmt"
-	"github.com/PacketFire/immigrant/command/context"
+	"github.com/PacketFire/immigrant/pkg/config"
 
 	"github.com/mitchellh/cli"
 )
 
 // New initializes the version command.
-func New(ctx context.Context, ui cli.Ui, version string) *Cmd {
-	return &Cmd{UI: ui, ctx: ctx, version: version}
+func New(conf config.Config, ui cli.Ui, version string) *Cmd {
+	return &Cmd{UI: ui, config: conf, version: version}
 }
 
 // Cmd represents a command within mitchellh/cli and stores all the context
 // necessary to execute the version command.
 type Cmd struct {
 	UI      cli.Ui
-	ctx     context.Context
+	config  config.Config
 	version string
 }
 

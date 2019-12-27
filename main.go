@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/PacketFire/immigrant/command"
-	"github.com/PacketFire/immigrant/command/context"
+	"github.com/PacketFire/immigrant/pkg/config"
 	"github.com/mitchellh/cli"
 )
 
@@ -27,7 +27,7 @@ func main() {
 	}
 
 	ui := &cli.BasicUi{Writer: os.Stdout, ErrorWriter: os.Stderr}
-	cmds := command.Build(context.Context{}).Map(ui)
+	cmds := command.Build(config.Config{}).Map(ui)
 	var names []string
 	for c := range cmds {
 		names = append(names, c)

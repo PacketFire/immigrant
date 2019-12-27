@@ -1,20 +1,20 @@
 package converge
 
 import (
-	"github.com/PacketFire/immigrant/command/context"
+	"github.com/PacketFire/immigrant/pkg/config"
 	"github.com/mitchellh/cli"
 )
 
 // New initializes the converge command.
-func New(ctx context.Context, ui cli.Ui) *Cmd {
-	return &Cmd{UI: ui, ctx: ctx}
+func New(conf config.Config, ui cli.Ui) *Cmd {
+	return &Cmd{UI: ui, config: conf}
 }
 
-// Cmd represents a command within mitchellh/cli and stores all the context
+// Cmd represents a command within mitchellh/cli and stores all the config
 // necessary to execute the version command.
 type Cmd struct {
-	UI  cli.Ui
-	ctx context.Context
+	UI     cli.Ui
+	config config.Config
 }
 
 // Run executes the converge command. An integer representing the success of
