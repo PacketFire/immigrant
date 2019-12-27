@@ -9,9 +9,26 @@ import (
 	"path/filepath"
 )
 
+// ErrNoTypeSpecified is triggered when a driver type lookup occurs with no
+// sprecified type field.
+type ErrNoTypeSpecified struct{}
+
+func (e *ErrNoTypeSpecified) Error() string {
+	return "driver type not specified"
+}
+
 // Config represents a KV mapping of string parameters to be passed to the
 // database.
 type Config map[string]string
+
+// DriverType returns the string representation of the driver to load.
+func (c Config) DriverType() (string, error) {
+	if v, prs := c["type"]; prs == true {
+		return v, nil
+	}
+
+	return "", &ErrNoTypeSpecified{}
+}
 
 // ParseConfig takes a path to the config directory and attempts to parse the
 // config.yml file in that directory. On success a Config is
